@@ -1,0 +1,269 @@
+*{
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}
+
+#main {
+    width: 100%;
+    height: calc(100vh - 60px);
+    position: relative;
+    overflow: auto;
+}
+
+#main input[type=submit]{
+    width: 160px;
+    height: 50px;
+    margin: 5px calc(50% - 80px);
+    border: 0px;
+    border-radius: 10px;
+    background-color: #aaa;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+#show_container h2{
+    margin-left: 20%;
+    width: 60%;
+    text-align: center;
+}
+#show_container .description{
+    margin: auto;
+    width: 60%;
+    text-indent: 40px;
+}
+#show_container .hidden{
+    display: none;
+}
+#show_container .click_tip {
+    text-align: center;
+    font-weight: bold;
+}
+
+
+#introduction #questionnaire{
+    font-size: 16px;
+    width: 600px;
+    margin: auto;
+}
+
+
+#scoretable
+{
+	width: 600px;
+    margin: 10px calc(50% - 300px);
+}
+#scoretable td
+{
+    text-align: center;
+    width: 10%;
+	background-color: #acbaee3b;
+	font-size: 18px;
+	padding: 5px 8px;
+}
+#scoretable tr.alt td
+{
+	color: #000000;
+	background-color: #92aaec94;
+}
+#scoretable td.fst
+{
+    text-align: left;
+    width: 50%;
+}
+
+
+#selection_form{
+    width: 60%;
+    margin: 0 20%;
+    /* background-color: #eee; */
+}
+#selection_form .selections_con{
+    width: 100%;
+    display: flex;
+    align-content: space-between;
+}
+#selection_form .selections
+{
+    display: inline-block;
+    width: 240px;
+    margin: auto;
+}
+#selection_form .sel
+{
+    background-color: #bbb;
+    width: 100%;
+    height: 65px;
+    margin: 10px 0;
+}
+#selection_form .sel p
+{
+    text-align: center;
+    margin: auto;
+    padding: 5px 0;
+}
+#selection_form .sel .sels
+{
+    display: flex;
+    justify-content: space-evenly;
+}
+#selection_form .sel .sels label{
+    width: 25%;
+    display: flex;
+    cursor: pointer;
+}
+#selection_form .sel .sels label input
+{
+    display: none;
+    opacity: 0;
+}
+#selection_form .sel .sels label input[type=radio]+span
+{
+    line-height: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin:2px;
+}
+#selection_form .sel .sels label:hover input[type=radio]+span:before
+{
+    background-color: #ddd;
+}
+#selection_form .sel .sels label:hover input[type=radio]:disabled+span:before
+{
+    background-color: #fff;
+}
+#selection_form .sel .sels label input[type=radio]+span:before
+{
+    line-height: 20px;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    content: '';
+    color: #fff;
+    border: 1px solid #000;
+    background-color: #fff;
+    border-radius: 3px;
+}
+#selection_form .sel .sels label input[type=radio]:checked+span:before
+{
+    content:'\2713';
+    color:#000;
+    border-radius: 3px;
+    font-size:16px;
+    text-align: center;
+    border-color: #000;
+}
+
+
+#game_result table {
+	width: 600px;
+    margin: 10px calc(50% - 300px);
+    text-align: center;
+	font-size: 18px;
+}
+#game_result table caption {
+    margin: 10px 0;
+	font-size: 20px;
+}
+#game_result table .first_col {
+    width: 25%;
+}
+#game_result table .second_row td {
+    width: 7.5%;
+}
+
+
+#svo_test .svo_item {
+    margin: 20px auto;
+    width: 780px;
+    display: flex;
+}
+#svo_test .svo_item .gain_con{
+    width: 110px;
+}
+#svo_test .svo_item .gain_con .gain{
+    position: relative;
+    text-align: left;
+    width: 80%;
+    height: 40%;
+    margin: 5px;
+    border-bottom: 2px solid black;
+}
+#svo_test .svo_item .gain_con .gain .label{
+    position: absolute;
+    top: 55%;
+    font-size: 14px;
+}
+#svo_test .svo_item .gain_con .gain .num{
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    font-size: 26px;
+}
+#svo_test .svo_item .table_con{
+    width: 630px;
+    height: 90px;
+    padding: 3px 30px 3px 3px;
+    border: 1.5px solid #000;
+}
+#svo_test .svo_item table{
+    text-align: center;
+    width: 630px;
+    height: 90px;
+    border-collapse: separate;
+    position: relative;
+}
+#svo_test .svo_item table .first_col{
+    width: 130px;
+}
+#svo_test .svo_item table tr {
+    height: 20px;
+}
+#svo_test .svo_item table td div {
+    text-align: center;
+    width: 37px;
+    height: 20px;
+    margin: 0 5px;
+    padding: 2px 0;
+    border: 2px solid #000;
+}
+#svo_test .svo_item table input[type=range] {
+    width: 455px;
+    margin: auto;
+    -webkit-appearance: none;
+    /* position: absolute;
+    height: 45px;
+    left: 154px;
+    top: 24px; */
+}
+#svo_test .svo_item table input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 15px;
+    width: 15px;
+    margin-top: -1px; /*使滑块超出轨道部分的偏移量相等*/
+    background: #ffffff; 
+    border-radius: 50%; /*外观设置为圆形*/
+    border: 3px solid #000; /*设置边框*/
+}
+#svo_test .svo_item table input[type=range]::-webkit-slider-thumb:hover {
+    border: 5px solid #000; /*设置边框*/
+}
+
+
+#exp_over h1 {
+    text-align: center;
+    position: fixed;
+    width: 600px;
+    top: 40%;
+    left: calc(50% - 300px);
+    font-size: 48px;
+}
+#exp_over #wait_post{
+    text-align: center;
+    position: fixed;
+    width: 600px;
+    left: calc(50% - 300px);
+    top: 80%;
+}

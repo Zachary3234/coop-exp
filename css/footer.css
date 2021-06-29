@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #fff;
+    color: #333;
+    font-size: 20px;
+}
+
+#footer {
+    position: fixed;
+    z-index: 1000;
+    width: 100%;
+    height: 60px;
+    top: calc(100vh - 60px);
+    background: #222;
+}
+
+#procedure{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 30px;
+    margin: 15px 0;
+    /* background-color: lightgrey; */
+}
+#procedure .dot {
+    position: relative;
+    display: inline-block;
+    /* 形状 */
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    /* 定位 */
+    margin: 3px 10px;
+    /* 指针 */
+    cursor: pointer;
+}
+#procedure .dot.current {
+    /* 形状 */
+    width: 12px;
+    height: 12px;
+    border: 6px solid #fff;
+}
+#procedure .dot.past {
+    /* 形状 */
+    width: 0px;
+    height: 0px;
+    border: 12px solid #fff;
+}
+#procedure .dot .tiptext{
+    visibility: hidden;
+    width: 180px;
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 5px 0;
+    
+    /* 定位 */
+    position: absolute;
+    z-index: 1;
+    bottom: 44px;
+    left: 50%;
+    margin-left: -90px;
+
+    /* 渐变 */
+    opacity: 0;
+    transition: opacity .3s;
+}
+#procedure .dot.current .tiptext{
+    bottom: 40px;
+}
+#procedure .dot.past .tiptext{
+    bottom: 34px;
+}
+#procedure .dot .tiptext::after {
+    /* 小三角尾标 */
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #222 transparent transparent transparent;
+}
+#procedure .dot:hover .tiptext {
+    /* 悬停 */
+    visibility: visible;
+    opacity: 1;
+}
