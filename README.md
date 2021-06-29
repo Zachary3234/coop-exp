@@ -1,8 +1,7 @@
-# coopexp
-An experiment of human machine cooperative decision making
-<br>
-一项人机合作决策实验
+# 人机合作决策实验
+
+[http://zachary3234.github.io/coopexp/](http://zachary3234.github.io/coopexp/)
 
 page built in Chinese
-<br>
+
 页面使用中文搭建
