@@ -1,5 +1,5 @@
 # coopexp
-An experiment of human machine cooperative decision making
+An experiment of human machine cooperative decision making<br>
 一项人机合作决策实验
 
 built in Chinese
