@@ -324,6 +324,7 @@ function sendStorage() {
     }, 1000);
 
     //ajax发送到服务器
+    jQuery.support.cors = true;
     var ajaxUpload = $.ajax({
         url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/upload", //请求的URL
         timeout: 4000, //超时时间设置，单位毫秒
