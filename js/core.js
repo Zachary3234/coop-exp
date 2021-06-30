@@ -325,7 +325,7 @@ function sendStorage() {
 
     //ajax发送到服务器
     var ajaxUpload = $.ajax({
-        url: "upload.php", //请求的URL
+        url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/upload", //请求的URL
         timeout: 4000, //超时时间设置，单位毫秒
         type: 'post', //请求方式，get或post
         data: JSON.stringify(dataObj), //请求所传参数，json格式
