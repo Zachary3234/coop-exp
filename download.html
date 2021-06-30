@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>人机协同决策实验</title>
+    <meta charset="utf-8">
+    <meta http-equiv='pragma' content='no-cache' />
+    <meta http-equiv='cache-control' content='no-cache' />
+    <meta http-equiv='expires' content='0' />
+    <script src="js/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <h1>现在数据库中有测试数据数目：<span id='count'></span></h1>
+    <h1 id='text1'></h1>
+    <button onclick="download()">下载</button>
+    <script>
+        jQuery.support.cors = true;
+        var ajaxUpload = $.ajax({
+            url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?func=check", //请求的URL
+            timeout: 4000, //超时时间设置，单位毫秒
+            type: 'get', //请求方式，get或post
+            complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                document.getElementById("count").innerHTML = XMLHttpRequest.responseText;
+                ajaxUpload.abort();
+            }
+        });
+        function download(){
+            jQuery.support.cors = true;
+            var ajaxUpload = $.ajax({
+                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download", //请求的URL
+                timeout: 4000, //超时时间设置，单位毫秒
+                type: 'get', //请求方式，get或post
+                complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                    document.getElementById("text1").innerHTML = XMLHttpRequest.responseText;
+                    document.getElementById("text2").innerHTML = XMLHttpRequest.getResponseHeader('Content-Type');
+                    ajaxUpload.abort();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
