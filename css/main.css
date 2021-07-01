@@ -204,7 +204,7 @@
 }
 #svo_test .svo_item .table_con{
     width: 630px;
-    height: 90px;
+    height: auto;
     padding: 3px 30px 3px 3px;
     border: 1.5px solid #000;
 }
