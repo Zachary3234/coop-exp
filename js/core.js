@@ -200,7 +200,7 @@ function saveExp() {
 
     //生成得分
     var setScore = calcScore();
-    totalScore += totalScore;
+    totalScore += setScore;
 
     if (set > 0) {
         //保存每组决策

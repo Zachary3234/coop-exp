@@ -262,6 +262,9 @@ function nextShow() {
                     move_cur = 0;
                     stopMainClick = true;
                     setSystem();
+                    if (show_cur==16) {
+                        document.getElementById("exp_tip").innerHTML = "本页面系统不再自动做出决策，请您手动为系统编辑十轮开关空调的决策<br>完成决策后点击确定继续";
+                    }
                     break;
                 default:
                     move_cur = 0;
