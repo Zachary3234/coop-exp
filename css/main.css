@@ -48,12 +48,12 @@
 }
 
 
-#scoretable
+.scoretable
 {
 	width: 600px;
     margin: 10px calc(50% - 300px);
 }
-#scoretable td
+.scoretable td
 {
     text-align: center;
     width: 10%;
@@ -61,12 +61,12 @@
 	font-size: 18px;
 	padding: 5px 8px;
 }
-#scoretable tr.alt td
+.scoretable tr.alt td
 {
 	color: #000000;
 	background-color: #92aaec94;
 }
-#scoretable td.fst
+.scoretable td.fst
 {
     text-align: left;
     width: 50%;

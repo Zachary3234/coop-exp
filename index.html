@@ -704,7 +704,7 @@
                     若四人均选择打开空调，则每人得分为8；
                     若你选择关掉空调，而另外三人选择打开空调，则此时关掉空调人数为1，关掉空调得分为4，
                     开空调人数为3，开空调得分为12，以此类推。</p>
-                <table id="scoretable">
+                <table class="scoretable">
                     <tr>
                         <td class="fst">关空调人数，（人）</td>
                         <td>0</td>
@@ -929,6 +929,40 @@
                         </div>
                     </div>
                 </div>
+                <table class="scoretable">
+                    <tr>
+                        <td class="fst">关空调人数，（人）</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                    <tr class="alt">
+                        <td class="fst">开空调人数，（人）</td>
+                        <td>4</td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td class="fst">关空调得分，（分/人）</td>
+                        <td>-</td>
+                        <td>4</td>
+                        <td>8</td>
+                        <td>12</td>
+                        <td>16</td>
+                    </tr>
+                    <tr class="alt">
+                        <td class="fst">开空调得分，（分/人）</td>
+                        <td>8</td>
+                        <td>12</td>
+                        <td>16</td>
+                        <td>20</td>
+                        <td>-</td>
+                    </tr>
+                </table>
                 <input type="submit" value="确定" onclick="clickBtn(3)">
             </div>
             <div id="animation" class="hidden">
