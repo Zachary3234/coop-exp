@@ -159,7 +159,7 @@ function genDataCollect() {
         dataCollect["score_" + set] = undefined;
     }
 
-    dataCollect["total_score"] = undefined;
+    dataCollect["total_score"] = 0;
     dataCollect["finish_time"] = undefined;
     
     return dataCollect;

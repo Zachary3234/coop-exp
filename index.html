@@ -111,6 +111,7 @@
                 key = "total_score";
                 let totalscore = dataCollect[key]+score;
                 setDataCollect(key,totalscore);
+                
             }
         }
     })
@@ -1123,13 +1124,13 @@
                     timeout: 5000, //超时时间设置，单位毫秒
                     type: 'post', //请求方式，get或post
                     data: JSON.stringify(dataCollect), //请求所传参数，json格式
-                    success:function(data){ //请求成功的回调函数
-                        _this.success = true;
-                        console.log('success');
-                    },
                     complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
                         _this.sending = false;
-                        if (status != 'success') {
+                        if (status == 'success') {
+                            _this.success = true;
+                            _this.dataId = XMLHttpRequest.responseText;
+                        }
+                        else{
                             _this.success = false;
                             _this.fail = true;
                             _this.failtext = XMLHttpRequest.responseText;
