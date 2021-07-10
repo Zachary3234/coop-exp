@@ -169,6 +169,7 @@ function setDataCollect(key,value){
         dataCollect[key] = value;
     }
 }
+dataCollect.targetCollection = "dataCollect1";
 
 
 const svoGains = [

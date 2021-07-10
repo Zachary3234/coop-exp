@@ -1078,7 +1078,8 @@
         <span>发送成功，编号：{{ dataId }}</span>
     </div>
     <div class="wait_post" v-show="fail">
-        <span>发送失败，请点击按钮重新发送</span>
+        <span>发送失败，请点击按钮重新发送：</span>
+        <span>{{failtext}}</span>
         <input type="submit" value="发送" @click="sendStorage">
     </div>
 </script>
@@ -1091,7 +1092,8 @@
                 dataId: "",
                 sending: true,
                 success: false,
-                fail: false
+                fail: false,
+                failtext: ''
             }
         },
         template: '#exp-over',
@@ -1111,7 +1113,32 @@
                 }
             },
             sendStorage(){
-
+                this.sending = true;
+                this.success = false;
+                this.fail = false;
+                let _this = this;
+                //ajax发送到服务器
+                var ajaxUpload = $.ajax({
+                    url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/upload", //请求的URL
+                    timeout: 5000, //超时时间设置，单位毫秒
+                    type: 'post', //请求方式，get或post
+                    data: JSON.stringify(dataCollect), //请求所传参数，json格式
+                    success:function(data){ //请求成功的回调函数
+                        _this.success = true;
+                        console.log('success');
+                    },
+                    complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                        _this.sending = false;
+                        if (status != 'success') {
+                            _this.success = false;
+                            _this.fail = true;
+                            _this.failtext = XMLHttpRequest.responseText;
+                            console.log('fail');
+                        }
+                        console.log('complete');
+                        ajaxUpload.abort();
+                    },
+                });
             }
         }
     })
@@ -1119,51 +1146,4 @@
 
 <script>
     const vmapp = app.mount('#app');
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
-    // vmapp.nextMove();
 </script>

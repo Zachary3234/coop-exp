@@ -18,7 +18,7 @@
     <script>
         jQuery.support.cors = true;
         var ajaxUpload = $.ajax({
-            url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download/check", //请求的URL
+            url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download/check?targetCollection=dataCollect1", //请求的URL
             timeout: 1000, //超时时间设置，单位毫秒
             type: 'get', //请求方式，get或post
             complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
@@ -29,14 +29,14 @@
         function download(){
             jQuery.support.cors = true;
             var ajaxUpload = $.ajax({
-                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download", //请求的URL
+                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?targetCollection=dataCollect1", //请求的URL
                 timeout: 5000, //超时时间设置，单位毫秒
                 type: 'get', //请求方式，get或post
                 complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
                     // console.log(XMLHttpRequest.responseText);
-                    downloadCSV(XMLHttpRequest.responseText);
-                    // testtext = '中文,english\r\n1,test\r\n';
-                    // downloadCSV(testtext);
+                    if (status == 'success'){
+                        downloadCSV(XMLHttpRequest.responseText);
+                    }
                     ajaxUpload.abort();
                 }
             });
