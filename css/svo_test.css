@@ -1,0 +1,85 @@
+.svo_grid{
+    width: calc(100% - 4px);
+    overflow: auto;
+    border: 2px solid #eee;
+}
+
+.svo_item {
+    margin: 20px auto;
+    width: 780px;
+    display: flex;
+    position: relative;
+    /* left: -50px; */
+    font-size: 18px;
+}
+.svo_item .gain_con{
+    width: 110px;
+}
+.svo_item .gain_con .gain{
+    position: relative;
+    text-align: left;
+    width: 80%;
+    height: 40%;
+    margin: 5px;
+    border-bottom: 2px solid black;
+}
+.svo_item .gain_con .gain .label{
+    position: absolute;
+    top: 55%;
+    font-size: 14px;
+}
+
+.svo_item .gain_con .gain .num{
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    font-size: 26px;
+}
+.svo_item .table_con{
+    width: 630px;
+    height: auto;
+    padding: 3px 30px 3px 3px;
+    border: 1.5px solid #000;
+}
+.svo_item table{
+    text-align: center;
+    width: 630px;
+    height: 90px;
+    border-collapse: separate;
+    position: relative;
+}
+.svo_item table .first_col{
+    width: 130px;
+}
+.svo_item table tr {
+    height: 20px;
+}
+.svo_item table td div {
+    text-align: center;
+    width: 37px;
+    height: 20px;
+    margin: 0 5px;
+    padding: 2px 0;
+    border: 2px solid #000;
+}
+.svo_item table input[type=range] {
+    width: 455px;
+    margin: auto;
+    -webkit-appearance: none;
+    /* position: absolute;
+    height: 45px;
+    left: 154px;
+    top: 24px; */
+}
+.svo_item table input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 15px;
+    width: 15px;
+    margin-top: -1px; /*使滑块超出轨道部分的偏移量相等*/
+    background: #ffffff; 
+    border-radius: 50%; /*外观设置为圆形*/
+    border: 3px solid #000; /*设置边框*/
+}
+.svo_item table input[type=range]::-webkit-slider-thumb:hover {
+    border: 5px solid #000; /*设置边框*/
+}

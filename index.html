@@ -1,1220 +1,1169 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>人机协同决策实验</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv='pragma' content='no-cache' />
     <meta http-equiv='cache-control' content='no-cache' />
     <meta http-equiv='expires' content='0' />
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/footer.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人机协同决策实验</title>
+    <!-- addon -->
     <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/vue-3.1.4.js"></script>
+    <!-- styles -->
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/procedure.css">
+    <link rel="stylesheet" href="css/stage.css">
+    <link rel="stylesheet" href="css/svo_test.css">
+    <link rel="stylesheet" href="css/decision.css">
+    <!-- scripts -->
+    <script src="js/NoToChinese.js"></script>
 </head>
 
 <body>
-    <div style="display: block" id="main" onclick="clickMain()">
-        <!-- 主界面 -->
-        <div id="show_container">
-            <!-- 页面容器 -->
-            <p id="debug"></p>
-            <div id="introduction" class="hidden">
-                <h2>行为决策实验</h2>
-                <p class="description">欢迎您参与由北航人因工程实验室的行为决策实验，
-                    本实验旨在探究自动驾驶情境下人的行为决策，
-                    您的答案没有正误之分，只需要您按照自己的理解进行选择即可！</p>
-                <p class="description">首先请填写以下小问卷：</p>
-                <form id="questionnaire">
-                    <p>1. 您的性别</p>
-                    <div>
-                        <label for="gender-0">
-                            <input type="radio" name="gender" id="gender-0" value="0" checked>
-                            <span>女</span>
-                        </label><br>
-                        <label for="gender-1">
-                            <input type="radio" name="gender" id="gender-1" value="1">
-                            <span>男</span>
-                        </label>
-                    </div>
-                    <p>2. 您的年龄是？</p>
-                    <select id="age">
-                        <option value="18-">18岁以下</option>
-                        <option value="18" selected>18</option>
-                        <option value="19">19</option>
-                        <option value="20">20</option>
-                        <option value="21">21</option>
-                        <option value="22">22</option>
-                        <option value="23">23</option>
-                        <option value="24">24</option>
-                        <option value="25">25</option>
-                        <option value="26">26</option>
-                        <option value="27">27</option>
-                        <option value="28">28</option>
-                        <option value="29">29</option>
-                        <option value="30">30</option>
-                        <option value="31">31</option>
-                        <option value="32">32</option>
-                        <option value="33">33</option>
-                        <option value="34">34</option>
-                        <option value="35">35</option>
-                        <option value="36">36</option>
-                        <option value="37">37</option>
-                        <option value="38">38</option>
-                        <option value="39">39</option>
-                        <option value="40">40</option>
-                        <option value="41">41</option>
-                        <option value="42">42</option>
-                        <option value="43">43</option>
-                        <option value="44">44</option>
-                        <option value="45">45</option>
-                        <option value="46">46</option>
-                        <option value="47">47</option>
-                        <option value="48">48</option>
-                        <option value="49">49</option>
-                        <option value="50">50</option>
-                        <option value="51">51</option>
-                        <option value="52">52</option>
-                        <option value="53">53</option>
-                        <option value="54">54</option>
-                        <option value="55">55</option>
-                        <option value="56">56</option>
-                        <option value="57">57</option>
-                        <option value="58">58</option>
-                        <option value="59">59</option>
-                        <option value="60">60</option>
-                        <option value="60+">60岁以上</option>
-                    </select>
-                    <p>3. 您目前的职业是？</p>
-                    <div class="occupation">
-                        <label for="occupation-1">
-                            <input type="radio" name="occupation" id="occupation-1" value="1" checked>
-                            <span>在校学生</span>
-                        </label><br>
-                        <label for="occupation-2">
-                            <input type="radio" name="occupation" id="occupation-2" value="2">
-                            <span>政府/机关干部/公务员</span>
-                        </label><br>
-                        <label for="occupation-3">
-                            <input type="radio" name="occupation" id="occupation-3" value="3">
-                            <span>企业管理者（包括基层及中高层管理者）</span>
-                        </label><br>
-                        <label for="occupation-4">
-                            <input type="radio" name="occupation" id="occupation-4" value="4">
-                            <span>普通职员（办公室/写字楼工作人员）</span>
-                        </label><br>
-                        <label for="occupation-5">
-                            <input type="radio" name="occupation" id="occupation-5" value="5">
-                            <span>专业人员（如医生/律师/文体/记者/老师等）</span>
-                        </label><br>
-                        <label for="occupation-6">
-                            <input type="radio" name="occupation" id="occupation-6" value="6">
-                            <span>普通工人（如工厂工人/体力劳动者等）</span>
-                        </label><br>
-                        <label for="occupation-7">
-                            <input type="radio" name="occupation" id="occupation-7" value="7">
-                            <span>商业服务业职工（如销售人员/商店职员/服务员等）</span>
-                        </label><br>
-                        <label for="occupation-8">
-                            <input type="radio" name="occupation" id="occupation-8" value="8">
-                            <span>个体经营者/承包商</span>
-                        </label><br>
-                        <label for="occupation-9">
-                            <input type="radio" name="occupation" id="occupation-9" value="9">
-                            <span>自由职业者</span>
-                        </label><br>
-                        <label for="occupation-10">
-                            <input type="radio" name="occupation" id="occupation-10" value="10">
-                            <span>农林牧渔劳动者</span>
-                        </label><br>
-                        <label for="occupation-11">
-                            <input type="radio" name="occupation" id="occupation-11" value="11">
-                            <span>退休</span>
-                        </label><br>
-                        <label for="occupation-12">
-                            <input type="radio" name="occupation" id="occupation-12" value="12">
-                            <span>暂无职业</span>
-                        </label><br>
-                        <label for="occupation-13">
-                            <input type="radio" name="occupation" id="occupation-13" value="13">
-                            <span>其他职业人员（请注明）</span>
-                            <input type="text">
-                        </label>
-                    </div>
-                    <p>4. 请留下您的支付宝账号以便我们为您发放报酬：</p>
-                    <input id="alipay" type="text">
-                </form>
-                <input type="submit" value="确定" onclick="clickBtn(1)">
+    <div id="app">
+        <div id="content">
+            <div id="stage">
+                <!-- <component v-for="item in stages[indStage].moveList[indMove]" :is="item">
+                </component> -->
+                <component :is="stages[indStage].moveList[indMove]">
+                </component>
             </div>
-            <!-- <div id="svo_desp" class="hidden">
-                <h2>SVO说明</h2>
-                <p class="description">本页面中，我们将进行社会取向的量表测量。
-                </p>
-                <p class="description">
-                    本量表模拟了资源分配的决策过程。
-                    每个SVO量表括号前代表您获得的资源数量，括号内数字代表了基于您的决策社会中其他人可以获得的资源数量。
-                    通过拖拽小球，您将对资源进行分配。
-                </p>
-                <p class="description">通过拖拽小球，您将对资源进行分配。
-                </p>
-                <p class="click_tip">阅读完毕请点击屏幕继续</p>
-            </div> -->
-            <div id="svo_test" class="hidden">
-                <h2>SVO测试</h2>
-                <p class="description">此页面中，我们将进行社会取向的量表测量。
-                </p>
-                <p class="description">
-                    本量表模拟了资源分配的决策过程。
-                    每个SVO量表上方数字代表基于您的决策社会您获得的资源数量，下方数字代表其他人获得的资源数量。
-                </p>
-                <p class="description">通过拖拽小球，您将对资源进行分配：
-                </p>
-                
-                <div class="svo_item">
-                    <div class="table_con">
-                        <table>
-                            <tr>
-                                <td class="first_col">你得到</td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td colspan="9">
-                                    <input type="range" name="receives" oninput="receiveChange(this,1)" min="1" max="9"
-                                        value="5">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>其他人得到</td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>76</div>
-                                </td>
-                                <td>
-                                    <div>68</div>
-                                </td>
-                                <td>
-                                    <div>59</div>
-                                </td>
-                                <td>
-                                    <div>50</div>
-                                </td>
-                                <td>
-                                    <div>41</div>
-                                </td>
-                                <td>
-                                    <div>33</div>
-                                </td>
-                                <td>
-                                    <div>24</div>
-                                </td>
-                                <td>
-                                    <div>15</div>
-                                </td>
-                            </tr>
-                        </table>
+        </div>
+        <div id="footer">
+            <div id="procedure">
+                <template v-for="(item,index) in stages">
+                    <div class="dot" :class="{current:index==indStage,past:index<indStage}" v-if="item.tipText!=''">
+                        <span class="tiptext">{{ item.tipText }}</span>
                     </div>
-                    <div class="gain_con">
-                        <div class="gain">
-                            <span class="label">你</span>
-                            <span class="num" id="gain-1-1">85</span>
-                        </div>
-                        <div class="gain">
-                            <span class="label">他人</span>
-                            <span class="num" id="gain-1-2">50</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="svo_item">
-                    <div class="table_con">
-                        <table>
-                            <tr>
-                                <td class="first_col">你得到</td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                                <td>
-                                    <div>87</div>
-                                </td>
-                                <td>
-                                    <div>89</div>
-                                </td>
-                                <td>
-                                    <div>91</div>
-                                </td>
-                                <td>
-                                    <div>93</div>
-                                </td>
-                                <td>
-                                    <div>94</div>
-                                </td>
-                                <td>
-                                    <div>96</div>
-                                </td>
-                                <td>
-                                    <div>98</div>
-                                </td>
-                                <td>
-                                    <div>100</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td colspan="9">
-                                    <input type="range" name="receives" oninput="receiveChange(this,2)" min="1" max="9"
-                                        value="5">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>其他人得到</td>
-                                <td>
-                                    <div>15</div>
-                                </td>
-                                <td>
-                                    <div>19</div>
-                                </td>
-                                <td>
-                                    <div>24</div>
-                                </td>
-                                <td>
-                                    <div>28</div>
-                                </td>
-                                <td>
-                                    <div>33</div>
-                                </td>
-                                <td>
-                                    <div>37</div>
-                                </td>
-                                <td>
-                                    <div>41</div>
-                                </td>
-                                <td>
-                                    <div>46</div>
-                                </td>
-                                <td>
-                                    <div>50</div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="gain_con">
-                        <div class="gain">
-                            <span class="label">你</span>
-                            <span class="num" id="gain-2-1">93</span>
-                        </div>
-                        <div class="gain">
-                            <span class="label">他人</span>
-                            <span class="num" id="gain-2-2">33</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="svo_item">
-                    <div class="table_con">
-                        <table>
-                            <tr>
-                                <td class="first_col">你得到</td>
-                                <td>
-                                    <div>50</div>
-                                </td>
-                                <td>
-                                    <div>54</div>
-                                </td>
-                                <td>
-                                    <div>59</div>
-                                </td>
-                                <td>
-                                    <div>63</div>
-                                </td>
-                                <td>
-                                    <div>68</div>
-                                </td>
-                                <td>
-                                    <div>72</div>
-                                </td>
-                                <td>
-                                    <div>76</div>
-                                </td>
-                                <td>
-                                    <div>81</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td colspan="9">
-                                    <input type="range" name="receives" oninput="receiveChange(this,3)" min="1" max="9"
-                                        value="5">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>其他人得到</td>
-                                <td>
-                                    <div>100</div>
-                                </td>
-                                <td>
-                                    <div>98</div>
-                                </td>
-                                <td>
-                                    <div>96</div>
-                                </td>
-                                <td>
-                                    <div>94</div>
-                                </td>
-                                <td>
-                                    <div>93</div>
-                                </td>
-                                <td>
-                                    <div>91</div>
-                                </td>
-                                <td>
-                                    <div>89</div>
-                                </td>
-                                <td>
-                                    <div>87</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="gain_con">
-                        <div class="gain">
-                            <span class="label">你</span>
-                            <span class="num" id="gain-3-1">68</span>
-                        </div>
-                        <div class="gain">
-                            <span class="label">他人</span>
-                            <span class="num" id="gain-3-2">93</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="svo_item">
-                    <div class="table_con">
-                        <table>
-                            <tr>
-                                <td class="first_col">你得到</td>
-                                <td>
-                                    <div>50</div>
-                                </td>
-                                <td>
-                                    <div>54</div>
-                                </td>
-                                <td>
-                                    <div>59</div>
-                                </td>
-                                <td>
-                                    <div>63</div>
-                                </td>
-                                <td>
-                                    <div>68</div>
-                                </td>
-                                <td>
-                                    <div>72</div>
-                                </td>
-                                <td>
-                                    <div>76</div>
-                                </td>
-                                <td>
-                                    <div>81</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td colspan="9">
-                                    <input type="range" name="receives" oninput="receiveChange(this,4)" min="1" max="9"
-                                        value="5">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>其他人得到</td>
-                                <td>
-                                    <div>100</div>
-                                </td>
-                                <td>
-                                    <div>89</div>
-                                </td>
-                                <td>
-                                    <div>79</div>
-                                </td>
-                                <td>
-                                    <div>68</div>
-                                </td>
-                                <td>
-                                    <div>58</div>
-                                </td>
-                                <td>
-                                    <div>47</div>
-                                </td>
-                                <td>
-                                    <div>36</div>
-                                </td>
-                                <td>
-                                    <div>26</div>
-                                </td>
-                                <td>
-                                    <div>15</div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="gain_con">
-                        <div class="gain">
-                            <span class="label">你</span>
-                            <span class="num" id="gain-4-1">68</span>
-                        </div>
-                        <div class="gain">
-                            <span class="label">他人</span>
-                            <span class="num" id="gain-4-2">58</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="svo_item">
-                    <div class="table_con">
-                        <table>
-                            <tr>
-                                <td class="first_col">你得到</td>
-                                <td>
-                                    <div>100</div>
-                                </td>
-                                <td>
-                                    <div>94</div>
-                                </td>
-                                <td>
-                                    <div>88</div>
-                                </td>
-                                <td>
-                                    <div>81</div>
-                                </td>
-                                <td>
-                                    <div>75</div>
-                                </td>
-                                <td>
-                                    <div>69</div>
-                                </td>
-                                <td>
-                                    <div>63</div>
-                                </td>
-                                <td>
-                                    <div>56</div>
-                                </td>
-                                <td>
-                                    <div>50</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td colspan="9">
-                                    <input type="range" name="receives" oninput="receiveChange(this,5)" min="1" max="9"
-                                        value="5">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>其他人得到</td>
-                                <td>
-                                    <div>50</div>
-                                </td>
-                                <td>
-                                    <div>56</div>
-                                </td>
-                                <td>
-                                    <div>63</div>
-                                </td>
-                                <td>
-                                    <div>69</div>
-                                </td>
-                                <td>
-                                    <div>75</div>
-                                </td>
-                                <td>
-                                    <div>81</div>
-                                </td>
-                                <td>
-                                    <div>88</div>
-                                </td>
-                                <td>
-                                    <div>94</div>
-                                </td>
-                                <td>
-                                    <div>100</div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="gain_con">
-                        <div class="gain">
-                            <span class="label">你</span>
-                            <span class="num" id="gain-5-1">75</span>
-                        </div>
-                        <div class="gain">
-                            <span class="label">他人</span>
-                            <span class="num" id="gain-5-2">75</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="svo_item">
-                    <div class="table_con">
-                        <table>
-                            <tr>
-                                <td class="first_col">你得到</td>
-                                <td>
-                                    <div>100</div>
-                                </td>
-                                <td>
-                                    <div>98</div>
-                                </td>
-                                <td>
-                                    <div>96</div>
-                                </td>
-                                <td>
-                                    <div>94</div>
-                                </td>
-                                <td>
-                                    <div>93</div>
-                                </td>
-                                <td>
-                                    <div>91</div>
-                                </td>
-                                <td>
-                                    <div>89</div>
-                                </td>
-                                <td>
-                                    <div>87</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td colspan="9">
-                                    <input type="range" name="receives" oninput="receiveChange(this,6)" min="1" max="9"
-                                        value="5">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>其他人得到</td>
-                                <td>
-                                    <div>50</div>
-                                </td>
-                                <td>
-                                    <div>54</div>
-                                </td>
-                                <td>
-                                    <div>59</div>
-                                </td>
-                                <td>
-                                    <div>63</div>
-                                </td>
-                                <td>
-                                    <div>68</div>
-                                </td>
-                                <td>
-                                    <div>72</div>
-                                </td>
-                                <td>
-                                    <div>76</div>
-                                </td>
-                                <td>
-                                    <div>81</div>
-                                </td>
-                                <td>
-                                    <div>85</div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="gain_con">
-                        <div class="gain">
-                            <span class="label">你</span>
-                            <span class="num" id="gain-6-1">93</span>
-                        </div>
-                        <div class="gain">
-                            <span class="label">他人</span>
-                            <span class="num" id="gain-6-2">68</span>
-                        </div>
-                    </div>
-                </div>
-
-                <input type="submit" value="确定" onclick="clickBtn(2)">
-            </div>
-            <div id="experiment_back" class="hidden">
-                <h2>实验背景</h2>
-                <p class="description">随着夏天的到来，气温升高。在驾驶汽车的过程中，
-                    打开空调会提高舒适度，但同时也会消耗更多的能源，
-                    释放更多的有害气体，加重环境污染。</p>
-                <p class="description">关掉空调，在一定程度上会降低我们的舒适感，
-                    却可以为保护环境贡献一点力量。目前环境污染日益严重，
-                    缓解环境污染需要我们每个人在生活中一点一滴的积累。</p>
-                <p class="description">在这种情况下，你会做什么选择呢？</p>
-                <p class="description">本实验场景为自动驾驶系统，自主程度高，可自动做出决策；
-                    而你具有否决权，即可对系统决策进行更改。</p>
-                <p class="click_tip">阅读完毕请点击屏幕继续（<span id="countdown10">10</span>秒）</p>
-            </div>
-            <div id="experiment_desp" class="hidden">
-                <h2>实验说明</h2>
-                <p class="description">本实验中，你将与另外三人进行开关空调的博弈，
-                    具体得分规则将在下页展示。在预设界面将进行多轮决策，
-                    系统会预先做出决策，你可对系统决策进行修改。</p>
-                <p class="description">每次预设结束后，将会有列表呈现系统预设与你修改预设后的博弈结果。
-                    列表中0表示打开空调，1表示关闭空调。</p>
-                <p class="click_tip">阅读完毕请点击屏幕继续</p>
-            </div>
-            <div id="score_desp" class="hidden">
-                <h2>得分说明</h2>
-                <p class="description">以下列表为博弈得分说明，在此举例以便于理解：
-                    若四人均选择打开空调，则每人得分为8；
-                    若你选择关掉空调，而另外三人选择打开空调，则此时关掉空调人数为1，关掉空调得分为4，
-                    开空调人数为3，开空调得分为12，以此类推。</p>
-                <table class="scoretable">
-                    <tr>
-                        <td class="fst">关空调人数，（人）</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>4</td>
-                    </tr>
-                    <tr class="alt">
-                        <td class="fst">开空调人数，（人）</td>
-                        <td>4</td>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td class="fst">关空调得分，（分/人）</td>
-                        <td>-</td>
-                        <td>4</td>
-                        <td>8</td>
-                        <td>12</td>
-                        <td>16</td>
-                    </tr>
-                    <tr class="alt">
-                        <td class="fst">开空调得分，（分/人）</td>
-                        <td>8</td>
-                        <td>12</td>
-                        <td>16</td>
-                        <td>20</td>
-                        <td>-</td>
-                    </tr>
-                </table>
-                <p class="click_tip">阅读完毕请点击屏幕继续</p>
-            </div>
-            <div id="practice_desp" class="hidden">
-                <h2>练习说明</h2>
-                <p class="description">本次为练习实验，预设完成后，将会播放汽车按照最终决策行动的动画，
-                    下面将对此过程进行展示，正式实验中将不再播放动画。</p>
-                <p class="click_tip">阅读完毕请点击屏幕继续</p>
-            </div>
-            <div id="practice_exp" class="hidden">
-                <h2>练习实验</h2>
-                <p style="text-align: center;">本页面系统自动决策，可对决策结果进行修改。
-                    <br>点击确定继续
-                </p>
-            </div>
-            <div id="matching" class="hidden">
-                <h2>正在匹配参与者</h2>
-                <div id="participant_con" style="text-align: center;">
-                    <div id="participant1">
-                        空位1
-                    </div>
-                    <div id="participant2">
-                        空位2
-                    </div>
-                    <div id="participant3">
-                        空位3
-                    </div>
-                </div>
-            </div>
-            <div id="formal_exp" class="hidden">
-                <h2>正式实验</h2>
-                <p id="exp_tip" style="text-align: center;">本页面系统自动决策，可对决策结果进行修改。
-                    <br>点击确定继续
-                </p>
-            </div>
-            <div id="selection_form" class="hidden">
-                <div class="selections_con">
-                    <div class="selections left">
-                        <div class="sel" id="sel_round-1">
-                            <p>第一轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-1-1">
-                                    <input type="radio" name="sel-1" id="sel-1-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-1-0">
-                                    <input type="radio" name="sel-1" id="sel-1-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="sel" id="sel_round-2">
-                            <p>第二轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-2-1">
-                                    <input type="radio" name="sel-2" id="sel-2-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-2-0">
-                                    <input type="radio" name="sel-2" id="sel-2-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="sel" id="sel_round-3">
-                            <p>第三轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-3-1">
-                                    <input type="radio" name="sel-3" id="sel-3-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-3-0">
-                                    <input type="radio" name="sel-3" id="sel-3-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="sel" id="sel_round-4">
-                            <p>第四轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-4-1">
-                                    <input type="radio" name="sel-4" id="sel-4-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-4-0">
-                                    <input type="radio" name="sel-4" id="sel-4-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="sel" id="sel_round-5">
-                            <p>第五轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-5-1">
-                                    <input type="radio" name="sel-5" id="sel-5-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-5-0">
-                                    <input type="radio" name="sel-5" id="sel-5-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="selections right">
-                        <div class="sel" id="sel_round-6">
-                            <p>第六轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-6-1">
-                                    <input type="radio" name="sel-6" id="sel-6-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-6-0">
-                                    <input type="radio" name="sel-6" id="sel-6-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="sel" id="sel_round-7">
-                            <p>第七轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-7-1">
-                                    <input type="radio" name="sel-7" id="sel-7-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-7-0">
-                                    <input type="radio" name="sel-7" id="sel-7-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="sel" id="sel_round-8">
-                            <p>第八轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-8-1">
-                                    <input type="radio" name="sel-8" id="sel-8-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-8-0">
-                                    <input type="radio" name="sel-8" id="sel-8-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="sel" id="sel_round-9">
-                            <p>第九轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-9-1">
-                                    <input type="radio" name="sel-9" id="sel-9-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-9-0">
-                                    <input type="radio" name="sel-9" id="sel-9-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="sel" id="sel_round-10">
-                            <p>第十轮：打开空调？</p>
-                            <div class="sels">
-                                <label for="sel-10-1">
-                                    <input type="radio" name="sel-10" id="sel-10-1" value="1"
-                                        onchange="radioChange(this)">
-                                    <span>是</span>
-                                </label>
-                                <label for="sel-10-0">
-                                    <input type="radio" name="sel-10" id="sel-10-0" value="0"
-                                        onchange="radioChange(this)">
-                                    <span>否</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <table class="scoretable">
-                    <tr>
-                        <td class="fst">关空调人数，（人）</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>4</td>
-                    </tr>
-                    <tr class="alt">
-                        <td class="fst">开空调人数，（人）</td>
-                        <td>4</td>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td class="fst">关空调得分，（分/人）</td>
-                        <td>-</td>
-                        <td>4</td>
-                        <td>8</td>
-                        <td>12</td>
-                        <td>16</td>
-                    </tr>
-                    <tr class="alt">
-                        <td class="fst">开空调得分，（分/人）</td>
-                        <td>8</td>
-                        <td>12</td>
-                        <td>16</td>
-                        <td>20</td>
-                        <td>-</td>
-                    </tr>
-                </table>
-                <input type="submit" value="确定" onclick="clickBtn(3)">
-            </div>
-            <div id="animation" class="hidden">
-                <h2>动画展示</h2>
-                <p style="text-align: center;">假装有动画</p>
-                <p class="click_tip">等待倒计时<span id="countdown5">5</span>秒或点击屏幕跳过</p>
-            </div>
-            <div id="game_result" class="hidden">
-                <h2>博弈结果</h2>
-                <table id="sys_result" class="hidden">
-                    <caption>系统初始决策博弈结果</caption>
-                    <tr style="background-color: #E2F0D9;">
-                        <td class="first_col" rowspan="2">参与者</td>
-                        <td colspan="10">决策轮次</td>
-                    </tr>
-                    <tr class="second_row" style="background-color: #E2F0D9;">
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>4</td>
-                        <td>5</td>
-                        <td>6</td>
-                        <td>7</td>
-                        <td>8</td>
-                        <td>9</td>
-                        <td>10</td>
-                    </tr>
-                    <tr class="participant1" style="background-color: #E9EBF5;">
-                        <td>参与者1</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="participant2" style="background-color: #E9EBF5;">
-                        <td>参与者2</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="participant3" style="background-color: #E9EBF5;">
-                        <td>参与者3</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="user_decision" style="background-color: #FBE5D6;">
-                        <td>系统</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="user_gain" style="background-color: #FBE5D6;">
-                        <td>系统收益</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                </table>
-                <table id="user_result">
-                    <caption>最终决策博弈结果</caption>
-                    <tr style="background-color: #E2F0D9;">
-                        <td class="first_col" rowspan="2">参与者</td>
-                        <td colspan="10">决策轮次</td>
-                    </tr>
-                    <tr class="second_row" style="background-color: #E2F0D9;">
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>4</td>
-                        <td>5</td>
-                        <td>6</td>
-                        <td>7</td>
-                        <td>8</td>
-                        <td>9</td>
-                        <td>10</td>
-                    </tr>
-                    <tr class="participant1" style="background-color: #E9EBF5;">
-                        <td>参与者1</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="participant2" style="background-color: #E9EBF5;">
-                        <td>参与者2</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="participant3" style="background-color: #E9EBF5;">
-                        <td>参与者3</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="user_decision" style="background-color: #FBE5D6;">
-                        <td>用户</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="user_gain" style="background-color: #FBE5D6;">
-                        <td>用户收益</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                </table>
-                <p class="click_tip">点击屏幕继续</p>
-            </div>
-            <div id="exp_over" class="hidden">
-                <h1>实验结束，感谢您的参与！</h1>
-                <div id="wait_post">
-                    <span id="wait_post_text">正在发送实验数据到服务器，请勿关闭网页</span>
-                    <input class="hidden" id="resend" type="submit" value="发送" onclick="sendStorage()">
-                </div>
+                </template>
             </div>
         </div>
     </div>
-    <div style="display: block" id="footer">
-        <!-- 底部功能条 -->
-        <div id="procedure">
-            <!--以圆点显示当前进度-->
-            <div class="dot" id="dot1">
-                <span class="tiptext">0. 介绍</span>
-            </div>
-            <div class="dot" id="dot2">
-                <span class="tiptext">1. SVO测试</span>
-            </div>
-            <div class="dot" id="dot3">
-                <span class="tiptext">2. 行为决策实验</span>
-            </div>
-            <div class="dot" id="dot4">
-                <span class="tiptext">2-0. 行为决策实验<br>练习</span>
-            </div>
-            <div class="dot" id="dot5">
-                <span class="tiptext">2-1. 行为决策实验<br>第一组</span>
-            </div>
-            <div class="dot" id="dot6">
-                <span class="tiptext">2-2. 行为决策实验<br>第二组</span>
-            </div>
-            <div class="dot" id="dot7">
-                <span class="tiptext">2-3. 行为决策实验<br>第三组</span>
-            </div>
-            <div class="dot" id="dot8">
-                <span class="tiptext">2-4. 行为决策实验<br>第四组</span>
-            </div>
-            <div class="dot" id="dot9">
-                <span class="tiptext">2-5. 行为决策实验<br>第五组</span>
-            </div>
-            <div class="dot" id="dot10">
-                <span class="tiptext">2-6. 行为决策实验<br>第六组</span>
-            </div>
-            <div class="dot" id="dot11">
-                <span class="tiptext">2-7. 行为决策实验<br>第七组</span>
-            </div>
-            <div class="dot" id="dot12">
-                <span class="tiptext">2-8. 行为决策实验<br>第八组</span>
-            </div>
-            <div class="dot" id="dot13">
-                <span class="tiptext">2-9. 行为决策实验<br>第九组</span>
-            </div>
-            <div class="dot" id="dot14">
-                <span class="tiptext">2-10. 行为决策实验<br>第十组</span>
-            </div>
-            <div class="dot" id="dot15">
-                <span class="tiptext">2-10. 行为决策实验<br>第十一组</span>
-            </div>
-            <div class="dot" id="dot16">
-                <span class="tiptext">2-12. 行为决策实验<br>第十二组</span>
-            </div>
-        </div>
-    </div>
-    <script src="js/show.js"></script>
-    <script src="js/core.js"></script>
-    <script>
-        debugText = document.getElementById("debug");
-        nextShow();
-        // var skip = 1;//34;
-        // for (var i = 0; i < skip; i++) {
-        //     nextShow();
-        // }
-    </script>
 </body>
+<!-- 初始化全局变量 -->
+<script src="js/initialize.js"></script>
+<script>
+    // 全局控制app
+    const app = Vue.createApp({
+        data() {
+            return {
+                stages: stageList,
+                indStage: 0,
+                indMove: 0
+            }
+        },
+        computed: {
+            currentStageItem() {
+                return this.stage[this.indStage].moveList[this.indMove];
+            }
+        },
+        methods: {
+            nextMove() {
+                this.indMove++;
+                if (this.indMove >= this.stages[this.indStage].moveList.length) {
+                    this.indMove = 0;
+                    this.indStage++;
+                }
+            },
+            returnMove(stage,move) {
+                this.indStage = stage;
+                this.indMove = move;
+            },
+            saveDecision(decisionTime){
+                let set = this.indStage-3;
+                let round = 0;
+                let key = "";
+                let coopRate = 0;
+                let score = 0;
+                for (let i = 0; i < userDecision.length; i++) {
+                    round = i+1;
+                    coopRate += userDecision[i];
+                    score += userRoundScore[i];
+
+                    key = "system_"+set+"-"+round;
+                    setDataCollect(key,systemDecision[i]);
+
+                    key = "user_"+set+"-"+round;
+                    setDataCollect(key,userDecision[i]);
+
+                    key = "other1_"+set+"-"+round;
+                    setDataCollect(key,otherDecision1[i]);
+
+                    key = "other2_"+set+"-"+round;
+                    setDataCollect(key,otherDecision2[i]);
+
+                    key = "other3_"+set+"-"+round;
+                    setDataCollect(key,otherDecision3[i]);
+                }
+                coopRate /= userDecision.length;
+                key = "coop_rate_"+set;
+                setDataCollect(key,coopRate);
+
+                key = "decision_time_"+set;
+                setDataCollect(key,decisionTime);
+
+                key = "score_"+set;
+                setDataCollect(key,score);
+                
+                key = "total_score";
+                let totalscore = dataCollect[key]+score;
+                setDataCollect(key,totalscore);
+            }
+        }
+    })
+</script>
 
 </html>
+
+<!-- components -->
+
+<!-- 实验介绍和基本信息 -->
+<script type="text/x-template" id="intro">
+    <div>
+        <p class="title big">行为决策实验</p>
+        <p class="description">
+            欢迎您参与北航人因工程实验室的行为决策实验，
+            本实验旨在探究自动驾驶情境下人的行为决策，
+            您的答案没有正误之分，
+            只需要您按照自己的理解进行选择即可！
+        </p>
+        <p class="description">首先请填写以下基本信息：</p>
+        <form class="formlist">
+            <p>1. 您的性别</p>
+            <div id="radio-gender">
+                <label for="gender-0">
+                    <input type="radio" name="gender" id="gender-0" value="女" v-model="gender">
+                    <span>女</span>
+                </label><br>
+                <label for="gender-1">
+                    <input type="radio" name="gender" id="gender-1" value="男" v-model="gender">
+                    <span>男</span>
+                </label>
+            </div>
+            <p>2. 您的年龄是？</p>
+            <select id="age" v-model="age">
+                <option value="18-">18岁以下</option>
+                <option value="18">18</option>
+                <option v-for="n in 42">{{ n+18 }}</option>
+                <option value="60+">60岁以上</option>
+            </select>
+            <p>3. 您目前的职业是？</p>
+            <div class="occupation">
+                <template v-for="(value,index) in occupations">
+                    <label :for="'occupation-'+index">
+                        <input  type="radio" name="occupation" 
+                                :id="'occupation-'+index" 
+                                :value="index" 
+                                v-model="occuSel">
+                        <span>{{ value }}</span>
+                    </label>
+                    <br>
+                </template>
+                <label :for="'occupation-'+occupations.length">
+                    <input  type="radio" name="occupation" 
+                            :id="'occupation-'+occupations.length" 
+                            :value="occupations.length" 
+                            v-model="occuSel">
+                    <span>其他职业人员（请注明）</span>
+                    <input type="text" v-model="occuInput" />
+                </label>
+            </div>
+            <p>4. 请留下您的支付宝账号以便我们为您发放报酬：</p>
+            <input id="alipay" type="text" v-model="alipay">
+        </form>
+        <input type="submit" value="确定" @click.stop="clickOk">
+    </div>
+</script>
+<script>
+    app.component('intro', {
+        data() {
+            return {
+                gender: "女",
+                age: "18",
+                occupations: occupationList,
+                occuSel: 0,
+                occuInput: "",
+                alipay: ""
+            }
+        },
+        template: '#intro',
+        computed: {
+            occupation() {
+                if (this.occuSel == this.occupations.length)
+                    return "其他职业人员（请注明）" + this.occuInput;
+                else
+                    return this.occupations[this.occuSel];
+            }
+        },
+        methods: {
+            clickOk(event) {
+                setDataCollect("gender",this.gender);
+                setDataCollect("age",this.age);
+                setDataCollect("occupation",this.occupation);
+                setDataCollect("alipay",this.alipay);
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+
+<!-- SVO测试 -->
+<script type="text/x-template" id="svo-test">
+    <div>
+        <p class="title">SVO测试</p>
+        <p class="description">
+            此页面中，我们将进行社会取向的量表测量。
+        </p>
+        <p class="description">
+            本量表模拟了资源分配的决策过程。
+            每个SVO量表上方数字代表基于您的决策社会您获得的资源数量，下方数字代表其他人获得的资源数量。
+        </p>
+        <p class="description">
+            通过拖拽小球，您将对资源进行分配：
+        </p>
+        <div class="svo_grid">
+            <svo-item v-for="n in 6" 
+                :self-gain-list="selfGainMap[n-1]"
+                :other-gain-list="otherGainMap[n-1]"
+                v-model="selects[n-1]"
+            ></svo-item>
+        </div>
+        <input type="submit" value="确定" @click.stop="clickOk">
+    </div>
+</script>
+<script type="text/x-template" id="svo-item">
+    <div class="svo_item">
+        <div class="table_con">
+            <table>
+                <tr>
+                    <td class="first_col">你得到</td>
+                    <td v-for="item in selfGainList">
+                        <div>{{ item }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="9">
+                        <input type="range" name="receives" min="0" max="8"
+                            v-model="select">
+                    </td>
+                </tr>
+                <tr>
+                    <td>其他人得到</td>
+                    <td v-for="item in otherGainList">
+                        <div>{{ item }}</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="gain_con">
+            <div class="gain">
+                <span class="label">你</span>
+                <span class="num">{{ selfGainList[select] }}</span>
+            </div>
+            <div class="gain">
+                <span class="label">他人</span>
+                <span class="num">{{ otherGainList[select] }}</span>
+            </div>
+        </div>
+    </div>
+</script>
+<script>
+    app.component('svo-item', {
+        data() {
+            return {
+                mselect: 4
+            }
+        },
+        props: ['self-gain-list','other-gain-list'],
+        emits: ['update:modelValue'],
+        template: '#svo-item',
+        computed: {
+            select: {
+                get() {
+                    return this.mselect
+                },
+                set(value) {
+                    this.mselect = value
+                    this.$emit('update:modelValue',value)
+                }
+            }
+        }
+    })
+    app.component('svo-test', {
+        data() {
+            return {
+                selfGainMap: svoGains.slice(0,6),
+                otherGainMap: svoGains.slice(6,12),
+                selects: [4,4,4,4,4,4],
+            }
+        },
+        template: '#svo-test',
+        computed: {
+            svo() {
+                let selfGain = 0;
+                let otherGain = 0;
+                for (let i = 0; i < 6; i++) {
+                    selfGain += this.selfGainMap[i][this.selects[i]];
+                    otherGain += this.otherGainMap[i][this.selects[i]];
+                }
+                return Math.atan((otherGain - 50 * 6) / (selfGain - 50 * 6)) * 180 / Math.PI;
+            }
+        },
+        methods: {
+            clickOk(event) {
+                setDataCollect("SVO",this.svo)
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+
+<!-- 实验背景 -->
+<script type="text/x-template" id="exp-back">
+    <div>
+        <p class="title">实验背景</p>
+        <p class="description">
+            随着夏天的到来，气温升高。
+            在驾驶汽车的过程中，你面临两个选择：
+        </p>
+        <p class="description">
+            1）<b>打开空调</b>会提高舒适度，但同时也会消耗更多的能源，
+            释放更多的有害气体，加重环境污染。
+        </p>
+        <p class="description">
+            2）<b>关掉空调</b>，在一定程度上会降低我们的舒适感，
+            却可以减少能源消耗，有害气体的释放，
+            为保护环境贡献一点力量。
+        </p>
+        <p class="description">
+            在这种情况下，<b>你会做什么选择呢？</b>
+        </p>
+        <p class="description">
+            本实验场景为<b>自动驾驶系统</b>，自主程度较高，
+            <b>可提前预设好是关开空调的决策</b>推荐给你；
+            而<b>你具有否决权</b>，
+            即可在它推荐的基础上按照自己的想法进行修改。
+        </p>
+        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
+        <!-- <div class="click_screen" @click.stop="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('exp-back', {
+        data() {
+            return {
+                cd: 20,
+                cdtimer: undefined
+            }
+        },
+        template: '#exp-back',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus,1000);
+            document.getElementById('content').addEventListener('click',this.clickScreen,false);
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+            document.getElementById('content').removeEventListener('click',this.clickScreen, false);
+        },
+        methods: {
+            clickScreen() {
+                if (debugFlag){
+                    vmapp.nextMove();
+                }else{
+                    if (this.cd<=0)
+                        vmapp.nextMove();
+                }
+            },
+            cdminus() {
+                this.cd--;
+                if (this.cd<=0)
+                    clearInterval(this.cdtimer);
+            }
+        }
+    })
+</script>
+<!-- 实验说明 -->
+<script type="text/x-template" id="exp-desp">
+    <div>
+        <p class="title">实验说明</p>
+        <p class="description">
+            本实验中，你将与<b>另外三人</b>进行开关空调的<b>博弈</b>，
+            在每一轮博弈中，你门<b>每个人都有两个选择</b>，开空调与关空调。
+            在博弈过程中，你们四个人<b>彼此之间不进行交流</b>，
+            但是需要<b>同时做出决策</b>，
+            然后根据你们四个人的决策结果按照一定的得分规则进行收益的计算。
+            具体得分规则将在下页展示。
+        </p>
+        <p class="description">
+            在预设界面将进行<b>多轮博弈决策</b>，系统会预先做出决策，
+            你可对系统决策进行修改。
+        </p>
+        <p class="description">
+            每次预设结束后，
+            将会有列表呈现系统预设与你修改预设后的博弈结果。
+            列表中“开”表示打开空调，“关”表示关闭空调。
+        </p>
+        <p class="description">每次预设结束后，将会有列表呈现系统预设与你修改预设后的博弈结果。
+            列表中0表示打开空调，1表示关闭空调。</p>
+        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    
+    app.component('exp-desp', {
+        data() {
+            return {
+                cd: 20,
+                cdtimer: undefined
+            }
+        },
+        template: '#exp-desp',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus,1000);
+            document.getElementById('content').addEventListener('click',this.clickScreen,false);
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
+        },
+        methods: {
+            clickScreen() {
+                if (debugFlag){
+                    vmapp.nextMove();
+                }else{
+                    if (this.cd<=0)
+                        vmapp.nextMove();
+                }
+            },
+            cdminus() {
+                this.cd--;
+                if (this.cd<=0)
+                    clearInterval(this.cdtimer);
+            }
+        }
+    })
+</script>
+<!-- 得分说明 -->
+<script type="text/x-template" id="score-table">
+    <table class="scoretable">
+        <tr>
+            <td class="fst">关空调人数，（人）</td>
+            <td v-for="n in 5">{{n-1}}</td>
+        </tr>
+        <tr class="alt">
+            <td class="fst">开空调人数，（人）</td>
+            <td v-for="n in 5">{{5-n}}</td>
+        </tr>
+        <tr>
+            <td class="fst">关空调得分，（分/人）</td>
+            <td>-</td>
+            <td v-for="n in 4">{{4*n}}</td>
+        </tr>
+        <tr class="alt">
+            <td class="fst">开空调得分，（分/人）</td>
+            <td v-for="n in 4">{{4+4*n}}</td>
+            <td>-</td>
+        </tr>
+    </table>
+</script>
+<script type="text/x-template" id="score-desp">
+    <div>
+        <p class="title">得分说明</p>
+        <p class="description">
+            以下列表为博弈得分说明，在此举例以便于理解：
+            如果你选择关闭空调而其他三个人选择打开它，
+            那么你将得到4分，而其他人将得到12分(见回报表第二列)。
+            如果每个人都选择关掉空调，
+            那么每个人都会得到16分(见收益表第五列)。
+            然而，如果每个人都决定打开自己的空调，
+            那么每个人只能得到8分(见回报表第一列)。
+            以此类推。
+        </p>
+        <br>
+        <score-table></score-table>
+        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('score-table', {
+        template: '#score-table'
+    })
+    app.component('score-desp', {
+        data() {
+            return {
+                cd: 20,
+                cdtimer: undefined
+            }
+        },
+        template: '#score-desp',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus,1000);
+            document.getElementById('content').addEventListener('click',this.clickScreen,false);
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
+        },
+        methods: {
+            clickScreen() {
+                if (debugFlag){
+                    vmapp.nextMove();
+                }else{
+                    if (this.cd<=0)
+                        vmapp.nextMove();
+                }
+            },
+            cdminus() {
+                this.cd--;
+                if (this.cd<=0)
+                    clearInterval(this.cdtimer);
+            }
+        }
+    })
+</script>
+<!-- 理解反馈 -->
+<script type="text/x-template" id="under-test">
+    <div>
+        <p class="title">理解反馈：第{{ titleNumCN[ind] }}题</p>
+        <p class="description" v-if="ind==0">假设现在你与另外三人进行了一次博弈游戏，
+            你选择了<b>关</b>空调，而另外三个人中有<b>两个人</b>选择了<b>开</b>空调，
+            <b>一个人</b>选择了<b>关</b>空调，请问你的得分是多少：
+        </p>
+        <p class="description" v-if="ind==1">假设现在你与另外三人进行了一次博弈游戏，
+            你选择了<b>开</b>空调，而另外三个人中有<b>两个人</b>选择了<b>开</b>空调，
+            <b>一个人</b>选择了<b>关</b>空调，请问你的得分是多少：
+        </p>
+        <p class="description" v-if="ind==2">假设现在你与另外三人进行了一次博弈游戏，
+            你选择了<b>开</b>空调，而另外三个人中有<b>两个人</b>选择了<b>关</b>空调，
+            <b>一个人</b>选择了<b>开</b>空调，请问你的得分是多少：
+        </p>
+        <div class="under_btns">
+            <button class="under_btn" v-for="n in 5" @click.stop="clickBtn(n)">{{ 4*n }}</button>
+        </div>
+        <score-table />
+        <p class="click_tip">请点击按钮答题</p>
+    </div>
+</script>
+<script>
+    app.component('under-test', {
+        data() {
+            return {
+                ind: 0,
+                titleNumCN: ["一","二","三"],
+                answers: [2,3,4],
+            }
+        },
+        template: '#under-test',
+        methods: {
+            clickBtn(num) {
+                if (num==this.answers[this.ind]){
+                    this.ind++;
+                    if (this.ind==this.answers.length)
+                        vmapp.nextMove();
+                }
+                else{
+                    alert('答案错误，请重新作答')
+                }
+            }
+        }
+    })
+</script>
+
+<!-- 练习说明 -->
+<script type="text/x-template" id="prac-desp">
+    <div>
+        <p class="title">练习说明</p>
+        <p class="description">接下来为练习实验，
+            本次页面将会呈现10轮次决策，决策结果系统已预先给出，
+            你可以根据自己的判断对结果进行修改，
+            点击确定后，你将会看到10轮决策的收益结果。
+        </p>
+        <p class="click_tip">阅读完毕请点击屏幕继续</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('prac-desp', {
+        template: '#prac-desp',
+        mounted() {
+            document.getElementById('content').addEventListener('click',this.clickScreen,false);
+        },
+        unmounted() {
+            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
+        },
+        methods: {
+            clickScreen() {
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+<!-- 决策选项表 -->
+<script type="text/x-template" id="decision-form">
+    <div class="decision_con">
+        <div class="sel_con" v-for="n in showNum">
+            <p>第{{ toChinese(n) }}轮：打开空调？</p>
+            <div class="sel">
+                <label :for="'sel-'+n+'-0'">
+                    <input type="radio" 
+                        :name="'sel-'+n"
+                        :id="'sel-'+n+'-0'" 
+                        :disabled="banDeci[n-1]"
+                        value="0"
+                        v-model="userDeci[n-1]"
+                        @change="makeDecision(n-1)"
+                    >
+                    <span>开</span>
+                </label>
+                <label :for="'sel-'+n+'-1'">
+                    <input type="radio" 
+                        :name="'sel-'+n" 
+                        :id="'sel-'+n+'-1'"
+                        :disabled="banDeci[n-1]"
+                        value="1"
+                        v-model="userDeci[n-1]"
+                        @change="makeDecision(n-1)"
+                    >
+                    <span>关</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</script>
+<script>
+    app.component('decision-form', {
+        data() {
+            return{
+                userDeci: JSON.parse(JSON.stringify(this.setdeci)),
+                banDeci: []
+            }
+        },
+        template: '#decision-form',
+        props: ['setdeci'],
+        emits: ['update:modelValue'],
+        computed: {
+            showNum() {
+                for (let i = 0; i < this.userDeci.length; i++) {
+                    if (this.userDeci[i]==-1)
+                        return i+1;
+                }
+                return this.userDeci.length;
+            }
+        },
+        methods: {
+            toChinese(num) {
+                return NoToChinese(num);
+            },
+            makeDecision(ind) {
+                this.banDeci[ind] = true;
+                let userdeci = [];
+                for (let i = 0; i < this.userDeci.length; i++) {
+                    userdeci.push(Number(this.userDeci[i]));
+                }
+                this.$emit('update:modelValue', userdeci)
+            }
+        }
+    })
+</script>
+<!-- 练习实验 -->
+<script type="text/x-template" id="prac-exp">
+    <div>
+        <p class="title top">练习实验</p>
+        <p class="description b">
+            本页面系统提供默认决策，您可对决策结果进行修改。
+            点击确定继续
+        </p>
+        <decision-form :setdeci="sysDeci" v-model="userDeci"></decision-form>
+        <score-table />
+        <input type="submit" value="确定" @click.stop="clickOk">
+    </div>
+</script>
+<script>
+    app.component('prac-exp', {
+        data() {
+            let iniDeci = [];
+            otherDecision1 = [];
+            otherDecision2 = [];
+            otherDecision3 = [];
+            for (let i = 0; i < 10; i++) {
+                iniDeci.push(Math.round(Math.random()));
+                otherDecision1.push(Math.round(Math.random()));
+                otherDecision2.push(Math.round(Math.random()));
+                otherDecision3.push(Math.round(Math.random()));
+            }
+            return{
+                sysDeci: JSON.parse(JSON.stringify(iniDeci)),
+                userDeci: JSON.parse(JSON.stringify(iniDeci))
+            }
+        },
+        template: '#prac-exp',
+        methods: {
+            clickOk(event) {
+                for (let i = 0; i < this.userDeci.length; i++) {
+                    if (this.userDeci[i]==-1){
+                        alert("尚未完成决策！");
+                        return;
+                    }
+                }
+                systemDecision = JSON.parse(JSON.stringify(this.sysDeci));
+                userDecision = JSON.parse(JSON.stringify(this.userDeci));
+                userRoundScore = calcScore(userDecision,otherDecision1,otherDecision2,otherDecision3);
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+<!-- 博弈结果 -->
+<script type="text/x-template" id="game-result">
+    <div>
+        <p class="title">博弈结果</p>
+        <div class="table_con">
+            <table class="result_table">
+                <caption>最终决策博弈结果</caption>
+                <tr style="background-color: #E2F0D9;">
+                    <td class="first_col" rowspan="2"></td>
+                    <td colspan="10">决策轮次</td>
+                </tr>
+                <tr class="second_row" style="background-color: #E2F0D9;">
+                    <td v-for="n in 10">{{n}}</td>
+                </tr>
+                <tr style="background-color: #E9EBF5;">
+                    <td>参与者{{partinum[0]}}</td>
+                    <td v-for="item in otherDeci1" 
+                        style="background-color: rgb(242,243,249);" 
+                        :class="{blue:item=='开',red:item=='关'}">
+                        {{item}}
+                    </td>
+                </tr>
+                <tr style="background-color: #E9EBF5;">
+                    <td>参与者{{partinum[1]}}</td>
+                    <td v-for="item in otherDeci2" 
+                    style="background-color: rgb(242,243,249);" 
+                    :class="{blue:item=='开',red:item=='关'}">
+                    {{item}}
+                </td>
+                </tr>
+                <tr style="background-color: #E9EBF5;">
+                    <td>参与者{{partinum[2]}}</td>
+                    <td v-for="item in otherDeci3"
+                     style="background-color: rgb(242,243,249);" 
+                     :class="{blue:item=='开',red:item=='关'}">
+                     {{item}}</td>
+                </tr>
+                <tr style="background-color: #FBE5D6;">
+                    <td>系统初始决策</td>
+                    <td v-for="item in sysDeci" 
+                    style="background-color: rgb(253,239,230);" 
+                    :class="{blue:item=='开',red:item=='关'}">
+                    {{item}}
+                </td>
+                </tr>
+                <tr style="background-color: #FBE5D6;">
+                    <td>你的决策</td>
+                    <td v-for="item in userDeci" 
+                    style="background-color: rgb(253,239,230);" 
+                    :class="{blue:item=='开',red:item=='关'}">
+                    {{item}}
+                </td>
+                </tr>
+                <tr style="background-color: #FBE5D6;">
+                    <td>你的最终收益</td>
+                    <td v-for="item in roundScore">{{item}}</td>
+                </tr>
+            </table>
+        </div>
+        <p class="click_tip">点击屏幕继续</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('game-result', {
+        data() {
+            let obj = {
+                sysDeci: JSON.parse(JSON.stringify(systemDecision)),
+                userDeci: JSON.parse(JSON.stringify(userDecision)),
+                otherDeci1: JSON.parse(JSON.stringify(otherDecision1)),
+                otherDeci2: JSON.parse(JSON.stringify(otherDecision2)),
+                otherDeci3: JSON.parse(JSON.stringify(otherDecision3))
+            }
+            let nRound = obj.userDeci.length;
+            for (let i = 0; i < 10; i++) {
+                for (let key in obj) {
+                    if (i<nRound){
+                        obj[key][i] = obj[key][i]==-1 ? 
+                            "/" :
+                            obj[key][i]==0 ? "开":"关";
+                    }else{
+                        obj[key][i] = "";
+                    }
+                }
+            }
+            obj.roundScore = JSON.parse(JSON.stringify(userRoundScore));
+            for (let i = nRound; i < 10; i++) {
+                obj.roundScore[i] = "";
+            }
+            obj.partinum = partiNum;
+            return obj;
+        },
+        template: '#game-result',
+        mounted() {
+            document.getElementById('content').addEventListener('click',this.clickScreen,false);
+        },
+        unmounted() {
+            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
+        },
+        methods: {
+            clickScreen() {
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+<!-- 练习实验结束 -->
+<script type="text/x-template" id="branch">
+    <div>
+        <p class="title big">
+            练习实验结束
+        </p>
+        <p class="description big">
+            请您确保已完全理解实验意图，
+            如有问题请点击<b>左边按钮</b>回到实验背景页面，
+            如没有问题，请点击<b>右边按钮</b>进入正式实验
+        </p>
+        <div class="branch_btns">
+            <input class="branch_btn" type="submit" value="回到实验背景" @click.stop="clickReturn">
+            <input class="branch_btn" type="submit" value="进入正式实验" @click.stop="clickNext">    
+        </div>
+    </div>
+</script>
+<script>
+    app.component('branch', {
+        template: '#branch',
+        methods: {
+            clickReturn() {
+                vmapp.returnMove(2,0);
+            },
+            clickNext() {
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+<!-- 匹配 -->
+<script type="text/x-template" id="matching">
+    <div>
+        <p class="match_tip" 
+            style="text-align: center; font-size: 40px; "
+            v-if="!matchSuccess"
+        >
+            请等待连接其他三位参与者...
+        </p>
+        <p class="match_tip"
+            style="text-align: center; font-size: 40px; "
+            v-if="matchSuccess"
+        >
+            匹配成功
+        </p>
+        <div class="parti_con">
+            <div class="match_parti">
+                <img class="parti_icon" src="img/parti1.png" alt="参与者1">
+                <span class="parti_text" v-if="partinum[0]!=0">参与者{{partinum[0]}}</span>
+            </div>
+            <div class="match_parti">
+                <img class="parti_icon" src="img/parti2.png" alt="参与者2">
+                <span class="parti_text" v-if="partinum[1]!=0">参与者{{partinum[1]}}</span>
+            </div>
+            <div class="match_parti">
+                <img class="parti_icon" src="img/parti3.png" alt="参与者3">
+                <span class="parti_text" v-if="partinum[2]!=0">参与者{{partinum[2]}}</span>
+            </div>
+        </div>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('matching', {
+        data() {
+            return {
+                cd: 5,
+                cdtimer: undefined,
+                partinum: [0,0,0],
+                matchSuccess: false
+            }
+        },
+        template: '#matching',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus,1000);
+            partiNum = randIntNoRepeat(3,1,99);
+            document.getElementById('content').addEventListener('click',this.clickScreen,false);
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
+        },
+        methods: {
+            cdminus() {
+                this.cd--;
+                if (this.cd<=0){
+                    if (!this.matchSuccess){
+                        this.partinum = partiNum;
+                        this.matchSuccess = true;
+                        this.cd = 3;
+                    }
+                    else{
+                        clearInterval(this.cdtimer);
+                        // vmapp.nextMove();
+                    }
+                }
+            },
+            clickScreen(){
+                if (debugFlag)
+                    vmapp.nextMove();
+            }
+        }
+    })
+</script>
+
+<!-- 正式实验 -->
+<script type="text/x-template" id="formal-exp">
+    <div>
+        <div class="parti_bar">
+            <div class="bar_item">
+                <img class="bar_icon" src="img/parti1.png" alt="参与者1">
+                <span class="bar_text">参与者{{ partinum[0] }}</span>
+            </div>
+            <div class="bar_item">
+                <img class="bar_icon" src="img/parti2.png" alt="参与者2">
+                <span class="bar_text">参与者{{ partinum[1] }}</span>
+            </div>
+            <div class="bar_item">
+                <img class="bar_icon" src="img/parti3.png" alt="参与者3">
+                <span class="bar_text">参与者{{ partinum[2] }}</span>
+            </div>
+        </div>
+        <p class="description b" v-if="hasSysDeci">
+            本页面系统提供默认决策，您可对决策结果进行修改。
+            点击确定继续
+        </p>
+        <p class="description b" v-if="!hasSysDeci">
+            本页面系统不再自动做出决策，请您手动为系统编辑十轮开关空调的决策。
+            完成决策后点击确定继续
+        </p>
+        <decision-form :setdeci="sysDeci" v-model="userDeci"></decision-form>
+        <score-table />
+        <input type="submit" value="确定" @click.stop="clickOk">
+    </div>
+</script>
+<script>
+    app.component('formal-exp', {
+        data() {
+            let iniDeci = systemDecisionMap.splice(0,1);
+            iniDeci = iniDeci[0];
+            otherDecision1 = [];
+            otherDecision2 = [];
+            otherDecision3 = [];
+            for (let i = 0; i < iniDeci.length; i++) {
+                otherDecision1.push(Math.round(Math.random()));
+                otherDecision2.push(Math.round(Math.random()));
+                otherDecision3.push(Math.round(Math.random()));
+            }
+            return{
+                sysDeci: JSON.parse(JSON.stringify(iniDeci)),
+                userDeci: JSON.parse(JSON.stringify(iniDeci)),
+                partinum: partiNum,
+                decisionTime: 0,
+                timer: undefined
+            }
+        },
+        template: '#formal-exp',
+        mounted() {
+            this.timer = setInterval(this.clock,100);
+        },
+        unmounted() {
+            clearInterval(this.timer);
+        },
+        computed:{
+            hasSysDeci(){
+                for (let i = 0; i < this.sysDeci.length; i++) {
+                    if (this.sysDeci[0]!=-1)
+                        return true;
+                }
+                return false;
+            }
+        },
+        methods: {
+            clickOk(event) {
+                for (let i = 0; i < this.userDeci.length; i++) {
+                    if (this.userDeci[i]==-1){
+                        if (!debugFlag){
+                            alert("尚未完成决策！");
+                            return;
+                        }else{
+                            this.userDeci[i] = Math.round(Math.random());
+                        }
+                    }
+                }
+                systemDecision = this.sysDeci;
+                userDecision = this.userDeci;
+                userRoundScore = calcScore(userDecision,otherDecision1,otherDecision2,otherDecision3);
+
+                clearInterval(this.timer);
+
+                vmapp.saveDecision(this.decisionTime/10);
+                vmapp.nextMove();
+            },
+            clock() {
+                this.decisionTime++;
+                if (this.decisionTime > 10000) {
+                    //超时，停止计时
+                    clearInterval(this.timer);
+                }
+            }
+        }
+    })
+</script>
+<!-- 等待 -->
+<script type="text/x-template" id="waiting">
+    <div>
+        <p class="big_tip">等待其他三位参与者做出决策...</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('waiting', {
+        data() {
+            return {
+                cd: 3,
+                cdtimer: undefined
+            }
+        },
+        template: '#waiting',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus,1000);
+            document.getElementById('content').addEventListener('click',this.clickScreen,false);
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
+        },
+        methods: {
+            cdminus() {
+                this.cd--;
+                if (this.cd<=0){
+                    clearInterval(this.cdtimer);
+                    vmapp.nextMove();
+                }
+            },
+            clickScreen(){
+                if (debugFlag)
+                    vmapp.nextMove();
+            }
+        }
+    })
+</script>
+
+<!-- 实验结束 -->
+<script type="text/x-template" id="exp-over">
+    <p class="big_tip">实验结束，感谢您的参与！</p>
+    <div class="wait_post" v-show="sending">
+        <span>正在发送实验数据到服务器，请勿关闭网页{{ dotText }}</span>
+    </div>
+    <div class="wait_post" v-show="success">
+        <span>发送成功，编号：{{ dataId }}</span>
+    </div>
+    <div class="wait_post" v-show="fail">
+        <span>发送失败，请点击按钮重新发送</span>
+        <input type="submit" value="发送" @click="sendStorage">
+    </div>
+</script>
+<script>
+    app.component('exp-over', {
+        data() {
+            return {
+                dotText: "",
+                cdtimer: undefined,
+                dataId: "",
+                sending: true,
+                success: false,
+                fail: false
+            }
+        },
+        template: '#exp-over',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus,1000);
+            setDataCollect("finish_time",Date());
+            this.sendStorage();
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+        },
+        methods: {
+            cdminus() {
+                this.dotText = this.dotText+".";
+                if (this.dotText=="...."){
+                    this.dotText = "";
+                }
+            },
+            sendStorage(){
+
+            }
+        }
+    })
+</script>
+
+<script>
+    const vmapp = app.mount('#app');
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+    // vmapp.nextMove();
+</script>

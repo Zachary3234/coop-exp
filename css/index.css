@@ -1,0 +1,45 @@
+*{
+    /* 文字不可选中 */
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}
+
+html,body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+body{
+    /* 背景色 */
+    overflow: hidden;
+}
+
+#app {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    /* border: 1px solid #333 */
+    overflow: hidden;
+}
+
+#content {
+    /* 尺寸 */
+    width: 100%;
+    height: 100%;
+    /* 内容排布 */
+    display: flex;
+    overflow: auto;
+}
+
+#footer {
+    /* 尺寸 */
+    width: 100%;
+    /* 置于顶层 */
+    z-index: 1000;
+    /* 背景色 */
+    background: #222;
+}

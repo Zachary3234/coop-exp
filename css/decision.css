@@ -1,0 +1,79 @@
+.decision_con{
+    max-width: 640px;
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(2,50%);
+    grid-template-rows: repeat(5,65px);
+    grid-auto-flow: column dense;
+    /* 居中 */
+    position: relative;
+    left: 50%;
+    transform: translate(-50%,0);
+}
+
+.sel_con {
+    width: 160px;
+    height: 55px;
+    margin: auto;
+    text-align: center;
+    background-color: #bbb;
+    font-size: 16px;
+}
+.sel_con p
+{
+    height: 16px;
+    margin: 0;
+    padding: 2px;
+    text-align: center;
+    white-space: nowrap;
+}
+.sel_con .sel
+{
+    width: 80%;
+    height: 35px;
+    margin: auto;
+    display: flex;
+}
+.sel_con .sel label
+{
+    margin: auto;
+}
+.sel_con .sel label input
+{
+    display: none;
+}
+.sel_con .sel label input[type=radio]+span
+{
+    line-height: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 2px;
+}
+.sel_con .sel label input[type=radio]+span:before
+{
+    line-height: 20px;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    content: '';
+    border: 1px solid #000;
+    background-color: #fff;
+    border-radius: 3px;
+}
+.sel_con .sel label:hover input[type=radio]+span:before
+{
+    background-color: #ccc;
+}
+.sel_con .sel label input[type=radio]:disabled+span:before
+{
+    background-color: #ddd;
+}
+.sel_con .sel label input[type=radio]:checked+span:before
+{
+    content:'\2713';
+    color:#000;
+    font-size: 16px;
+    text-align: center;
+}
