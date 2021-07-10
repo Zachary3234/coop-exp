@@ -13,23 +13,54 @@
 <body>
     <div style="text-align: center;">
         <h1>现在数据库中有测试数据数目：<span id='count'></span></h1>
+        <button style="width: 100px; height: 40px; font-size: 20px;" onclick="checkData()">查询数目</button>
         <button style="width: 100px; height: 40px; font-size: 20px;" onclick="download()">下载</button>
+        <br>
+        <br>
+        <button style="width: 100px; height: 40px; font-size: 20px;" onclick="clearData()">清空数据</button>
+        <input style="width: 160px; height: 30px; font-size: 20px;" 
+            type="password" id="password" placeholder="输入密码">
     </div>
     <script>
-        jQuery.support.cors = true;
-        var ajaxUpload = $.ajax({
-            url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download/check?targetCollection=dataCollect1", //请求的URL
-            timeout: 1000, //超时时间设置，单位毫秒
-            type: 'get', //请求方式，get或post
-            complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
-                document.getElementById("count").innerHTML = XMLHttpRequest.responseText;
-                ajaxUpload.abort();
-            }
-        });
-        function download(){
-            jQuery.support.cors = true;
+        checkData();
+        function checkData(){
+            console.log('check command');
+            document.getElementById("count").innerHTML = "";
             var ajaxUpload = $.ajax({
-                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?targetCollection=dataCollect1", //请求的URL
+                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?targetCollection=dataCollect1&command=check", //请求的URL
+                timeout: 3000, //超时时间设置，单位毫秒
+                type: 'get', //请求方式，get或post
+                complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                    document.getElementById("count").innerHTML = XMLHttpRequest.responseText;
+                    console.log('status: '+status);
+                    console.log('response: '+XMLHttpRequest.responseText);
+                    ajaxUpload.abort();
+                }
+            });
+        }
+        function clearData(){
+            console.log('clear command');
+            let password = document.getElementById("password").value;
+            var ajaxUpload = $.ajax({
+                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?targetCollection=dataCollect1&command=clear&password="+password, //请求的URL
+                timeout: 3000, //超时时间设置，单位毫秒
+                type: 'get', //请求方式，get或post
+                complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                    console.log('status: '+status);
+                    console.log('response: '+XMLHttpRequest.responseText);
+                    if (status!='success'){
+                        alert(XMLHttpRequest.responseText);
+                    }
+                    else{
+                        document.getElementById("count").innerHTML = XMLHttpRequest.responseText;
+                    }
+                    ajaxUpload.abort();
+                }
+            });
+        }
+        function download(){
+            var ajaxUpload = $.ajax({
+                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?targetCollection=dataCollect1&command=download", //请求的URL
                 timeout: 5000, //超时时间设置，单位毫秒
                 type: 'get', //请求方式，get或post
                 complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
@@ -37,6 +68,8 @@
                     if (status == 'success'){
                         downloadCSV(XMLHttpRequest.responseText);
                     }
+                    console.log('status: '+status);
+                    console.log('response: '+XMLHttpRequest.responseText);
                     ajaxUpload.abort();
                 }
             });
