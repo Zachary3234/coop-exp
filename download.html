@@ -48,11 +48,9 @@
                 complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
                     console.log('status: '+status);
                     console.log('response: '+XMLHttpRequest.responseText);
+                    alert(XMLHttpRequest.responseText);
                     if (status!='success'){
-                        alert(XMLHttpRequest.responseText);
-                    }
-                    else{
-                        document.getElementById("count").innerHTML = XMLHttpRequest.responseText;
+                        checkData();
                     }
                     ajaxUpload.abort();
                 }
