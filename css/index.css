@@ -43,3 +43,7 @@ body{
     /* 背景色 */
     background: #222;
 }
+
+input {
+    outline:none;
+}

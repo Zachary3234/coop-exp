@@ -131,50 +131,16 @@
             您的答案没有正误之分，
             只需要您按照自己的理解进行选择即可！
         </p>
-        <p class="description">首先请填写以下基本信息：</p>
-        <form class="formlist">
-            <p>1. 您的性别</p>
-            <div id="radio-gender">
-                <label for="gender-0">
-                    <input type="radio" name="gender" id="gender-0" value="女" v-model="gender">
-                    <span>女</span>
-                </label><br>
-                <label for="gender-1">
-                    <input type="radio" name="gender" id="gender-1" value="男" v-model="gender">
-                    <span>男</span>
-                </label>
-            </div>
-            <p>2. 您的年龄是？</p>
-            <select id="age" v-model="age">
-                <option value="18-">18岁以下</option>
-                <option value="18">18</option>
-                <option v-for="n in 42">{{ n+18 }}</option>
-                <option value="60+">60岁以上</option>
-            </select>
-            <p>3. 您目前的职业是？</p>
-            <div class="occupation">
-                <template v-for="(value,index) in occupations">
-                    <label :for="'occupation-'+index">
-                        <input  type="radio" name="occupation" 
-                                :id="'occupation-'+index" 
-                                :value="index" 
-                                v-model="occuSel">
-                        <span>{{ value }}</span>
-                    </label>
-                    <br>
-                </template>
-                <label :for="'occupation-'+occupations.length">
-                    <input  type="radio" name="occupation" 
-                            :id="'occupation-'+occupations.length" 
-                            :value="occupations.length" 
-                            v-model="occuSel">
-                    <span>其他职业人员（请注明）</span>
-                    <input type="text" v-model="occuInput" />
-                </label>
-            </div>
-            <p>4. 请留下您的支付宝账号以便我们为您发放报酬：</p>
-            <input id="alipay" type="text" v-model="alipay">
-        </form>
+        <p class="description">
+            本实验为匿名实验，
+            您只需要在下方输入实验编号即可进入实验。
+            （请确保您的实验编号正确，
+            若您不记得编号请及时联系工作人员）
+        </p>
+        <div class="number">
+            <span>请输入实验编号</span>
+            <input type="text" v-model="number">
+        </div>
         <input type="submit" value="确定" @click.stop="clickOk">
     </div>
 </script>
@@ -182,29 +148,13 @@
     app.component('intro', {
         data() {
             return {
-                gender: "女",
-                age: "18",
-                occupations: occupationList,
-                occuSel: 0,
-                occuInput: "",
-                alipay: ""
+                number: ""
             }
         },
         template: '#intro',
-        computed: {
-            occupation() {
-                if (this.occuSel == this.occupations.length)
-                    return "其他职业人员（请注明）" + this.occuInput;
-                else
-                    return this.occupations[this.occuSel];
-            }
-        },
         methods: {
             clickOk(event) {
-                setDataCollect("gender",this.gender);
-                setDataCollect("age",this.age);
-                setDataCollect("occupation",this.occupation);
-                setDataCollect("alipay",this.alipay);
+                setDataCollect("number",this.number);
                 vmapp.nextMove();
             }
         }
@@ -276,7 +226,7 @@
     app.component('svo-item', {
         data() {
             return {
-                mselect: 4
+                mselect: 0
             }
         },
         props: ['self-gain-list','other-gain-list'],
@@ -727,53 +677,53 @@
         <div class="table_con">
             <table class="result_table">
                 <caption>最终决策博弈结果</caption>
-                <tr style="background-color: #E2F0D9;">
+                <tr style="background-color: rgb(218,227,243);">
                     <td class="first_col" rowspan="2"></td>
                     <td colspan="10">决策轮次</td>
                 </tr>
-                <tr class="second_row" style="background-color: #E2F0D9;">
+                <tr class="second_row" style="background-color: rgb(218,227,243);">
                     <td v-for="n in 10">{{n}}</td>
                 </tr>
-                <tr style="background-color: #E9EBF5;">
+                <tr style="background-color: rgb(242,242,242);">
                     <td>参与者{{partinum[0]}}</td>
                     <td v-for="item in otherDeci1" 
-                        style="background-color: rgb(242,243,249);" 
-                        :class="{blue:item=='开',red:item=='关'}">
+                        style="background-color: rgb(249,249,249);" 
+                        :class="{green:item=='开',red:item=='关'}">
                         {{item}}
                     </td>
                 </tr>
-                <tr style="background-color: #E9EBF5;">
+                <tr style="background-color: rgb(242,242,242);">
                     <td>参与者{{partinum[1]}}</td>
                     <td v-for="item in otherDeci2" 
-                    style="background-color: rgb(242,243,249);" 
-                    :class="{blue:item=='开',red:item=='关'}">
+                    style="background-color: rgb(249,249,249);" 
+                    :class="{green:item=='开',red:item=='关'}">
                     {{item}}
                 </td>
                 </tr>
-                <tr style="background-color: #E9EBF5;">
+                <tr style="background-color: rgb(242,242,242);">
                     <td>参与者{{partinum[2]}}</td>
                     <td v-for="item in otherDeci3"
-                     style="background-color: rgb(242,243,249);" 
-                     :class="{blue:item=='开',red:item=='关'}">
+                     style="background-color: rgb(249,249,249);" 
+                     :class="{green:item=='开',red:item=='关'}">
                      {{item}}</td>
                 </tr>
-                <tr style="background-color: #FBE5D6;">
+                <tr style="background-color: rgb(255,245,215);">
                     <td>系统初始决策</td>
                     <td v-for="item in sysDeci" 
-                    style="background-color: rgb(253,239,230);" 
-                    :class="{blue:item=='开',red:item=='关'}">
+                    style="background-color: rgb(255,249,231);" 
+                    :class="{green:item=='开',red:item=='关'}">
                     {{item}}
                 </td>
                 </tr>
-                <tr style="background-color: #FBE5D6;">
+                <tr style="background-color: rgb(255,245,215);">
                     <td>你的决策</td>
                     <td v-for="item in userDeci" 
-                    style="background-color: rgb(253,239,230);" 
-                    :class="{blue:item=='开',red:item=='关'}">
+                    style="background-color: rgb(255,249,231);" 
+                    :class="{green:item=='开',red:item=='关'}">
                     {{item}}
                 </td>
                 </tr>
-                <tr style="background-color: #FBE5D6;">
+                <tr style="background-color: rgb(255,245,215);">
                     <td>你的最终收益</td>
                     <td v-for="item in roundScore">{{item}}</td>
                 </tr>

@@ -131,9 +131,7 @@ const occupationList = [
 const dataCollect = genDataCollect();
 function genDataCollect() {
     let dataCollect = {
-        alipay: undefined,
-        age: undefined,
-        occupation: undefined,
+        number: undefined,
         SVO: undefined
     };
     for (let set = 1; set <= 12; set++) {

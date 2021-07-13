@@ -86,10 +86,38 @@
     text-indent: 0;
 }
 
-
-.formlist {
-    margin: 0 50px;
+.number {
+    /* margin: 0 20px; */
+    /* height: 80px; */
+    max-width: 410px;
+    padding: 20px 0;
+    /* width: 400px; */
+    /* 左右居中 */
+    position: relative;
+    left: 50%;
+    transform: translate(-50%,0);
+    /* 内容排布 */
+    display: flex;
+    flex-wrap: wrap;
 }
+.number span {
+    white-space: nowrap; 
+    text-align: center;
+    font-size: 20px;
+    width: 200px;
+    height: 30px;
+    margin: auto;
+}
+.number input {
+    font-size: 18px;
+    width: 200px;
+    height: 30px;
+    margin: auto;
+}
+
+/* .formlist {
+    margin: 0 50px;
+} */
 
 
 .click_tip {
@@ -194,8 +222,8 @@
     color: rgb(192,0,0);
     font-weight: 800;
 }
-.result_table td.blue {
-    color: rgb(46,117,182);
+.result_table td.green {
+    color: rgb(75,117,47);
     font-weight: 800;
 }
 .result_table .first_col {
