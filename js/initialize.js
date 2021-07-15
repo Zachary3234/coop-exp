@@ -1,4 +1,4 @@
-const debugFlag = true;
+var debugFlag = false;
 
 //系统决策表
 var systemDecisionMap = genSysDeciMap();
