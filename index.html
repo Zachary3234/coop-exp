@@ -995,7 +995,7 @@
         },
         template: '#waiting',
         mounted() {
-            this.cdtimer = setInterval(this.cdminus,1000);
+            this.cdtimer = setInterval(this.cdminus,100);
             document.getElementById('content').addEventListener('click',this.clickScreen,false);
         },
         unmounted() {
