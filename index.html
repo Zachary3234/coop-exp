@@ -283,7 +283,7 @@
             在驾驶汽车的过程中，你面临两个选择：
         </p>
         <p class="description">
-            1）<b>打开空调</b>会提高舒适度，但同时也会消耗更多的能源，
+            1）<b>打开空调</b>，会提高舒适度，但同时也会消耗更多的能源，
             释放更多的有害气体，加重环境污染。
         </p>
         <p class="description">
@@ -611,7 +611,7 @@
                 return NoToChinese(num);
             },
             makeDecision(ind) {
-                this.banDeci[ind] = true;
+                // this.banDeci[ind] = true;
                 let userdeci = [];
                 for (let i = 0; i < this.userDeci.length; i++) {
                     userdeci.push(Number(this.userDeci[i]));
@@ -850,7 +850,7 @@
         template: '#matching',
         mounted() {
             this.cdtimer = setInterval(this.cdminus,1000);
-            partiNum = randIntNoRepeat(3,1,99);
+            partiNum = randIntNoRepeat(3,1,16);
             document.getElementById('content').addEventListener('click',this.clickScreen,false);
         },
         unmounted() {
@@ -989,7 +989,7 @@
     app.component('waiting', {
         data() {
             return {
-                cd: 3,
+                cd: 15,
                 cdtimer: undefined
             }
         },
