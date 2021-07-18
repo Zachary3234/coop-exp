@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv='pragma' content='no-cache' />
+    <meta http-equiv='cache-control' content='no-cache' />
+    <meta http-equiv='expires' content='0' />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人机协同决策实验</title>
+    <!-- addon -->
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/vue-3.1.4.js"></script>
+    <!-- styles -->
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/procedure.css">
+    <link rel="stylesheet" href="css/stage.css">
+    <link rel="stylesheet" href="css/svo_test.css">
+    <link rel="stylesheet" href="css/decision.css">
+    <link rel="stylesheet" href="css/deci_img.css">
+    <!-- scripts -->
+    <script src="js/functions.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="content">
+            <div id="stage">
+                <!-- <component v-for="item in stages[indStage].moveList[indMove]" :is="item">
+                </component> -->
+                <component :is="stages[indStage].moveList[indMove]">
+                </component>
+            </div>
+        </div>
+        <div id="footer">
+            <div id="procedure">
+                <template v-for="(item,index) in stages">
+                    <div class="dot" :class="{current:index==indStage,past:index<indStage}" v-if="item.tipText!=''">
+                        <span class="tiptext">{{ item.tipText }}</span>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    // 程序初始化
+    var debugFlag = false;
+
+    //系统决策表
+    var systemDecisionMap = genSysDeciMap();
+    function genSysDeciMap(){
+        let sysDeciMap = [];
+        let sysDeciSet = [];
+        let systemCoopNum = [];
+        //前11轮决策
+        for (let i = 0; i < 11; i++) {
+            systemCoopNum.push(i);
+        }
+        systemCoopNum = shuffle(systemCoopNum);
+        for (let i = 0; i < 11; i++) {
+            sysDeciSet = [];
+            for (let j = 0; j < 10; j++) {
+                if (j<systemCoopNum[i])
+                    sysDeciSet.push(1);
+                else
+                    sysDeciSet.push(0);
+            }
+            sysDeciSet = shuffle(sysDeciSet);
+            sysDeciMap.push(sysDeciSet);
+        }
+        
+        return sysDeciMap;
+    }
+    
+    // 页面控制
+    const stageList = genStageList();
+    function genStageList() {
+        let stageList = [
+            {
+                tipText: "0. 介绍",
+                moveList: [
+                    "intro"
+                ]
+            }
+        ];
+        for (let i=1;i<=systemDecisionMap.length;i++) {
+            stageList.push({
+                tipText: i+". 环境友好度测试 第"+numToChinese(i)+"组",
+                moveList: [
+                    "fri-test"
+                ]
+            });
+        }
+        stageList.push({
+            tipText: "",
+            moveList: [
+                "exp-over"
+            ]
+        });
+        return stageList;
+    }
+    
+    // 数据收集对象
+    const dataCollect = genDataCollect();
+    function genDataCollect() {
+        let dataCollect = {
+            targetCollection: "dataCollect3",
+            number: undefined
+        };
+        for (let set = 0; set < 11; set++) {
+            dataCollect["close-"+set] = undefined;
+        }
+        dataCollect["finish_time"] = undefined;
+        
+        return dataCollect;
+    }
+    
+    // 全局控制app
+    const app = Vue.createApp({
+        data() {
+            return {
+                stages: stageList,
+                indStage: 0,
+                indMove: 0
+            }
+        },
+        computed: {
+            currentStageItem() {
+                return this.stage[this.indStage].moveList[this.indMove];
+            }
+        },
+        methods: {
+            nextMove() {
+                this.indMove++;
+                if (this.indMove >= this.stages[this.indStage].moveList.length) {
+                    this.indMove = 0;
+                    this.indStage++;
+                }
+            },
+            returnMove(stage,move) {
+                this.indStage = stage;
+                this.indMove = move;
+            }
+        }
+    })
+</script>
+
+</html>
+
+<!-- components -->
+
+<!-- 实验介绍和基本信息 -->
+<script type="text/x-template" id="intro">
+    <div>
+        <p class="title big">行为决策实验三</p>
+        <p class="description">
+            欢迎您参与北航人因工程实验室的行为决策实验，
+            本实验旨在探究自动驾驶情境下人的行为决策，
+            您的答案没有正误之分，
+            只需要您按照自己的理解进行选择即可！
+        </p>
+        <p class="description">
+            本实验为匿名实验，
+            您只需要在下方输入实验编号即可进入实验。
+            （请确保您的实验编号正确，
+            若您不记得编号请及时联系工作人员）
+        </p>
+        <div class="number">
+            <span>请输入实验编号</span>
+            <input type="text" v-model="number">
+        </div>
+        <input type="submit" value="确定" @click.stop="clickOk">
+    </div>
+</script>
+<script>
+    app.component('intro', {
+        data() {
+            return {
+                number: ""
+            }
+        },
+        mounted(){
+            if (typeof(Storage) !== "undefined") {
+                this.number = sessionStorage["number"] || "";
+            } else {
+                this.number = "";
+            }
+        },
+        template: '#intro',
+        methods: {
+            clickOk(event) {
+                if (typeof(Storage) !== "undefined") {
+                    sessionStorage["number"] = this.number;
+                }
+                setDataCollect("number",this.number);
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+
+<!-- 环境友好度测试 -->
+<script type="text/x-template" id="fri-test">
+    <div>
+        <p class="title top">自然环境友好度测试</p>
+        <p class="description">本页面共进行10次开关空调的决策，
+            系统默认打开空调<span style="color:red;font-weight:bold;">{{openNum}}</span>次，关闭空调<span style="color:red;font-weight:bold;">{{closeNum}}</span>次，
+            请评价呈现本界面的系统对自然环境的友好度。
+        </p>
+        <br>
+        <p class="description b">
+            本页面系统提供默认决策，您可对决策结果进行修改。
+            点击确定继续
+        </p>
+        <decision-form :user-deci="iniDeci"></decision-form>
+        <br>
+        <div class="fri_con">
+            <span class="fri_text">很不友好</span>
+            <label class="fri_sel_con" :for="'fri-sel-'+n" v-for="n in 5">
+                <input type="radio" 
+                    name="fri-sel"
+                    :id="'fri-sel-'+n"
+                    :value="n"
+                    v-model="selFri"
+                >
+                <span>{{n}}</span>
+            </label>
+            <span class="fri_text">很友好</span>
+        </div>
+        <input type="submit" value="确定" @click.stop="clickOk">
+    </div>
+</script>
+<script>
+    app.component('fri-test', {
+        data() {
+            return{
+                iniDeci: systemDecisionMap[0],
+                selFri: undefined
+            }
+        },
+        computed:{
+            openNum(){
+                return 10-this.closeNum;
+            },
+            closeNum(){
+                let sum = 0;
+                for (let i = 0; i < this.iniDeci.length; i++) {
+                    sum += this.iniDeci[i];
+                }
+                return sum;
+            }
+        },
+        template: '#fri-test',
+        methods: {
+            clickOk(event) {
+                if (!(this.selFri>=1&&this.selFri<=5)){
+                    alert('尚未完成选择！');
+                    return;
+                }
+                setDataCollect("close-"+this.closeNum,this.selFri);
+                systemDecisionMap.splice(0,1);
+                this.iniDeci = systemDecisionMap[0];
+                this.selFri = undefined;
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+<!-- 决策选项表 -->
+<script type="text/x-template" id="decision-form">
+    <div class="decision_con">
+        <div class="sel_con" v-for="n in showNum">
+            <p>第{{ toChinese(n) }}轮：打开空调？</p>
+            <div class="sel">
+                <label :for="'sel-'+n+'-0'">
+                    <input type="radio" 
+                        :name="'sel-'+n"
+                        :id="'sel-'+n+'-0'" 
+                        disabled="true"
+                        value="0"
+                        v-model="userDeci[n-1]"
+                    >
+                    <span>开</span>
+                </label>
+                <label :for="'sel-'+n+'-1'">
+                    <input type="radio" 
+                        :name="'sel-'+n" 
+                        :id="'sel-'+n+'-1'"
+                        disabled="true"
+                        value="1"
+                        v-model="userDeci[n-1]"
+                    >
+                    <span>关</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</script>
+<script>
+    app.component('decision-form', {
+        template: '#decision-form',
+        props: ['userDeci'],
+        emits: ['update:modelValue'],
+        computed: {
+            showNum() {
+                for (let i = 0; i < this.userDeci.length; i++) {
+                    if (this.userDeci[i]==-1)
+                        return i+1;
+                }
+                return this.userDeci.length;
+            }
+        },
+        methods: {
+            toChinese(num) {
+                return numToChinese(num);
+            }
+        }
+    })
+</script>
+
+<!-- 实验结束 -->
+<script type="text/x-template" id="exp-over">
+    <p class="big_tip">实验结束，感谢您的参与！</p>
+    <div class="wait_post" v-show="sending">
+        <span>正在发送实验数据到服务器，请勿关闭网页{{ dotText }}</span>
+    </div>
+    <div class="wait_post" v-show="success">
+        <span>发送成功</span>
+        <input type="submit" value="返回实验选择" @click="returnIndex">
+    </div>
+    <div class="wait_post" v-show="fail">
+        <span>发送失败，请点击按钮重新发送：</span>
+        <span>{{failtext}}</span>
+        <input type="submit" value="发送" @click="sendStorage">
+    </div>
+</script>
+<script>
+    app.component('exp-over', {
+        data() {
+            return {
+                dotText: "",
+                cdtimer: undefined,
+                dataId: "",
+                sending: true,
+                success: false,
+                fail: false,
+                failtext: ''
+            }
+        },
+        template: '#exp-over',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus,1000);
+            setDataCollect("finish_time",Date());
+            this.sendStorage();
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+        },
+        methods: {
+            cdminus() {
+                this.dotText = this.dotText+".";
+                if (this.dotText=="...."){
+                    this.dotText = "";
+                }
+            },
+            sendStorage(){
+                this.sending = true;
+                this.success = false;
+                this.fail = false;
+                let _this = this;
+                //ajax发送到服务器
+                var ajaxUpload = $.ajax({
+                    url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/upload", //请求的URL
+                    timeout: 5000, //超时时间设置，单位毫秒
+                    type: 'post', //请求方式，get或post
+                    data: JSON.stringify(dataCollect), //请求所传参数，json格式
+                    complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                        _this.sending = false;
+                        if (status == 'success') {
+                            _this.success = true;
+                            _this.dataId = XMLHttpRequest.responseText;
+                        }
+                        else{
+                            _this.success = false;
+                            _this.fail = true;
+                            _this.failtext = XMLHttpRequest.responseText;
+                            console.log('fail');
+                        }
+                        console.log('complete');
+                        ajaxUpload.abort();
+                    },
+                });
+            },
+            returnIndex(){
+                window.location.href = "index.html";
+            }
+        }
+    })
+</script>
+
+<script>
+    const vmapp = app.mount('#app');
+</script>

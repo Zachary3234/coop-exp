@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv='pragma' content='no-cache' />
+    <meta http-equiv='cache-control' content='no-cache' />
+    <meta http-equiv='expires' content='0' />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人机协同决策实验</title>
+    <!-- addon -->
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/vue-3.1.4.js"></script>
+    <!-- styles -->
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/procedure.css">
+    <link rel="stylesheet" href="css/stage.css">
+    <link rel="stylesheet" href="css/svo_test.css">
+    <link rel="stylesheet" href="css/decision.css">
+    <!-- scripts -->
+    <script src="js/functions.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="content">
+            <div id="stage">
+                <!-- <component v-for="item in stages[indStage].moveList[indMove]" :is="item">
+                </component> -->
+                <component :is="stages[indStage].moveList[indMove]">
+                </component>
+            </div>
+        </div>
+        <div id="footer">
+            <div id="procedure">
+                <template v-for="(item,index) in stages">
+                    <div class="dot" :class="{current:index==indStage,past:index<indStage}" v-if="item.tipText!=''">
+                        <span class="tiptext">{{ item.tipText }}</span>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    // 程序初始化
+    var debugFlag = true;
+
+    // 页面控制
+    const stageList = genStageList();
+    function genStageList() {
+        let stageList = [
+            {
+                tipText: "0. 介绍",
+                moveList: [
+                    "intro"
+                ]
+            },
+            {
+                tipText: "1. 实验背景",
+                moveList: [
+                    "exp-back"
+                ]
+            },
+            {
+                tipText: "2. 实验说明",
+                moveList: [
+                    "exp-desp"
+                ]
+            },
+            {
+                tipText: "3. 得分说明",
+                moveList: [
+                    "score-desp"
+                ]
+            },
+            {
+                tipText: "4. 理解测试",
+                moveList: [
+                    "under-test"
+                ]
+            },
+            {
+                tipText: "5. 行为决策实验 练习",
+                moveList: [
+                    "prac-desp",
+                    "prac-exp",
+                    "game-result"
+                ]
+            }
+        ];
+        stageList.push({
+            tipText: "",
+            moveList: [
+                "branch"
+            ]
+        });
+        return stageList;
+    }
+
+    //每组决策
+    systemDecision = [];
+    userDecision = [];
+    otherDecision1 = [];
+    otherDecision2 = [];
+    otherDecision3 = [];
+    userRoundScore = [];
+    // Debug
+    for (let i = 0; i < 10; i++) {
+        systemDecision.push(Math.round(Math.random()));
+        userDecision.push(Math.round(Math.random()));
+        otherDecision1.push(Math.round(Math.random()));
+        otherDecision2.push(Math.round(Math.random()));
+        otherDecision3.push(Math.round(Math.random()));
+        userRoundScore.push(Math.round(Math.random()));
+    }
+
+    // 匹配者号码
+    var partiNum = ['X', 'Y', 'Z'];
+
+    // vue全局控制app
+    const app = Vue.createApp({
+        data() {
+            return {
+                stages: stageList,
+                indStage: 0,
+                indMove: 0
+            }
+        },
+        computed: {
+            currentStageItem() {
+                return this.stage[this.indStage].moveList[this.indMove];
+            }
+        },
+        methods: {
+            nextMove() {
+                this.indMove++;
+                if (this.indMove >= this.stages[this.indStage].moveList.length) {
+                    this.indMove = 0;
+                    this.indStage++;
+                }
+            },
+            returnMove(stage, move) {
+                this.indStage = stage;
+                this.indMove = move;
+            }
+        }
+    })
+</script>
+
+</html>
+
+<!-- components -->
+
+<!-- 实验介绍和基本信息 -->
+<script type="text/x-template" id="intro">
+    <div>
+        <p class="title big">行为决策实验-练习</p>
+        <p class="description">
+            欢迎您参与北航人因工程实验室的行为决策实验，
+            本实验旨在探究自动驾驶情境下人的行为决策，
+            您的答案没有正误之分，
+            只需要您按照自己的理解进行选择即可！
+        </p>
+        <p class="description">
+            本实验为匿名实验，
+            您只需要在下方输入实验编号即可进入实验。
+            （请确保您的实验编号正确，
+            若您不记得编号请及时联系工作人员）
+        </p>
+        <div class="number">
+            <span>请输入实验编号</span>
+            <input type="text" v-model="number">
+        </div>
+        <input type="submit" value="确定" @click.stop="clickOk">
+    </div>
+</script>
+<script>
+    app.component('intro', {
+        data() {
+            return {
+                number: ""
+            }
+        },
+        mounted(){
+            if (typeof(Storage) !== "undefined") {
+                this.number = sessionStorage["number"] || "";
+            } else {
+                this.number = "";
+            }
+        },
+        template: '#intro',
+        methods: {
+            clickOk(event) {
+                if (typeof(Storage) !== "undefined") {
+                    sessionStorage["number"] = this.number;
+                }
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+
+<!-- 实验背景 -->
+<script type="text/x-template" id="exp-back">
+    <div>
+        <p class="title">实验背景</p>
+        <p class="description">
+            天气微热，在驾驶汽车的过程中，你面临两个选择：
+        </p>
+        <p class="description">
+            1）<b>打开空调</b>，会提高舒适度，但同时也会消耗更多的能源，
+            释放更多的有害气体加重环境污染。
+        </p>
+        <p class="description">
+            2）<b>关掉空调</b>，在一定程度上会降低我们的舒适感，
+            却可以减少能源消耗，有害气体的释放，
+            为保护环境贡献一点力量。
+        </p>
+        <p class="description">
+            在这种情况下，<b>你会做什么选择呢？</b>
+        </p>
+        <p class="description">
+            本实验场景为<b>自动驾驶系统</b>，自主程度较高，
+            <b>可提前预设好是关开空调的决策</b>推荐给你；
+            而<b>你具有否决权</b>，
+            即可在它推荐的基础上按照自己的想法进行修改。
+        </p>
+        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
+        <!-- <div class="click_screen" @click.stop="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('exp-back', {
+        data() {
+            return {
+                cd: 20,
+                cdtimer: undefined
+            }
+        },
+        template: '#exp-back',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus, 1000);
+            document.getElementById('content').addEventListener('click', this.clickScreen, false);
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+            document.getElementById('content').removeEventListener('click', this.clickScreen, false);
+        },
+        methods: {
+            clickScreen() {
+                if (debugFlag) {
+                    vmapp.nextMove();
+                } else {
+                    if (this.cd <= 0)
+                        vmapp.nextMove();
+                }
+            },
+            cdminus() {
+                this.cd--;
+                if (this.cd <= 0)
+                    clearInterval(this.cdtimer);
+            }
+        }
+    })
+</script>
+<!-- 实验说明 -->
+<script type="text/x-template" id="exp-desp">
+    <div>
+        <p class="title">实验说明</p>
+        <p class="description">
+            本实验中，你将与<b>另外三人</b>进行开关空调的<b>博弈</b>，
+            在每一轮博弈中，你们<b>每个人都有两个选择</b>，开空调与关空调。
+            在博弈过程中，你们四个人<b>彼此之间不进行交流，各自做出决策</b>，
+            然后根据你们四个人的决策结果按照一定的得分规则进行收益的计算。
+            具体得分规则将在下页展示。
+        </p>
+        <p class="description">
+            在预设界面将进行<b>多轮博弈决策</b>，系统会预先做出决策，
+            你可对系统决策进行修改。
+        </p>
+        <p class="description">
+            每次预设结束后，
+            将会有列表呈现系统预设与你修改预设后的博弈结果。
+            列表中“开”表示打开空调，“关”表示关闭空调。
+        </p>
+        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+
+    app.component('exp-desp', {
+        data() {
+            return {
+                cd: 20,
+                cdtimer: undefined
+            }
+        },
+        template: '#exp-desp',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus, 1000);
+            document.getElementById('content').addEventListener('click', this.clickScreen, false);
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+            document.getElementById('content').removeEventListener('click', this.clickScreen, false);
+        },
+        methods: {
+            clickScreen() {
+                if (debugFlag) {
+                    vmapp.nextMove();
+                } else {
+                    if (this.cd <= 0)
+                        vmapp.nextMove();
+                }
+            },
+            cdminus() {
+                this.cd--;
+                if (this.cd <= 0)
+                    clearInterval(this.cdtimer);
+            }
+        }
+    })
+</script>
+<!-- 得分说明 -->
+<script type="text/x-template" id="score-table">
+    <table class="scoretable">
+        <tr>
+            <td class="fst">关空调人数，（人）</td>
+            <td v-for="n in 5">{{n-1}}</td>
+        </tr>
+        <tr class="alt">
+            <td class="fst">开空调人数，（人）</td>
+            <td v-for="n in 5">{{5-n}}</td>
+        </tr>
+        <tr>
+            <td class="fst">关空调得分，（分/人）</td>
+            <td>-</td>
+            <td v-for="n in 4">{{4*n}}</td>
+        </tr>
+        <tr class="alt">
+            <td class="fst">开空调得分，（分/人）</td>
+            <td v-for="n in 4">{{4+4*n}}</td>
+            <td>-</td>
+        </tr>
+    </table>
+</script>
+<script type="text/x-template" id="score-desp">
+    <div>
+        <p class="title">得分说明</p>
+        <p class="description">
+            以下列表为博弈得分说明，在此举例以便于理解：
+            如果你选择关闭空调而其他三个人选择打开它，
+            那么你将得到4分，而其他人将得到12分(见收益表第二列)。
+            如果每个人都选择关掉空调，
+            那么每个人都会得到16分(见收益表第五列)。
+            然而，如果每个人都决定打开自己的空调，
+            那么每个人只能得到8分(见收益表第一列)。
+            以此类推。
+        </p>
+        <br>
+        <score-table></score-table>
+        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('score-table', {
+        template: '#score-table'
+    })
+    app.component('score-desp', {
+        data() {
+            return {
+                cd: 20,
+                cdtimer: undefined
+            }
+        },
+        template: '#score-desp',
+        mounted() {
+            this.cdtimer = setInterval(this.cdminus, 1000);
+            document.getElementById('content').addEventListener('click', this.clickScreen, false);
+        },
+        unmounted() {
+            clearInterval(this.cdtimer);
+            document.getElementById('content').removeEventListener('click', this.clickScreen, false);
+        },
+        methods: {
+            clickScreen() {
+                if (debugFlag) {
+                    vmapp.nextMove();
+                } else {
+                    if (this.cd <= 0)
+                        vmapp.nextMove();
+                }
+            },
+            cdminus() {
+                this.cd--;
+                if (this.cd <= 0)
+                    clearInterval(this.cdtimer);
+            }
+        }
+    })
+</script>
+<!-- 理解反馈 -->
+<script type="text/x-template" id="under-test">
+    <div>
+        <p class="title">理解反馈：第{{ titleNumCN[ind] }}题</p>
+        <p class="description" v-if="ind==0">假设现在你与另外三人进行了一次博弈游戏，
+            你选择了<b>关</b>空调，而另外三个人中有<b>两个人</b>选择了<b>开</b>空调，
+            <b>一个人</b>选择了<b>关</b>空调，请问你的得分是多少：
+        </p>
+        <p class="description" v-if="ind==1">假设现在你与另外三人进行了一次博弈游戏，
+            你选择了<b>开</b>空调，而另外三个人中有<b>两个人</b>选择了<b>开</b>空调，
+            <b>一个人</b>选择了<b>关</b>空调，请问你的得分是多少：
+        </p>
+        <p class="description" v-if="ind==2">假设现在你与另外三人进行了一次博弈游戏，
+            你选择了<b>开</b>空调，而另外三个人中有<b>两个人</b>选择了<b>关</b>空调，
+            <b>一个人</b>选择了<b>开</b>空调，请问你的得分是多少：
+        </p>
+        <div class="under_btns">
+            <button class="under_btn" v-for="n in 5" @click.stop="clickBtn(n)">{{ 4*n }}</button>
+        </div>
+        <score-table />
+        <p class="click_tip">请点击按钮答题</p>
+    </div>
+</script>
+<script>
+    app.component('under-test', {
+        data() {
+            return {
+                ind: 0,
+                titleNumCN: ["一", "二", "三"],
+                answers: [2, 3, 4],
+            }
+        },
+        template: '#under-test',
+        methods: {
+            clickBtn(num) {
+                if (num == this.answers[this.ind]) {
+                    this.ind++;
+                    if (this.ind == this.answers.length)
+                        vmapp.nextMove();
+                }
+                else {
+                    alert('答案错误，请重新作答')
+                }
+            }
+        }
+    })
+</script>
+
+<!-- 练习说明 -->
+<script type="text/x-template" id="prac-desp">
+    <div>
+        <p class="title">练习说明</p>
+        <p class="description">接下来为练习实验，
+            本次页面将会呈现10轮次决策，决策结果系统已预先给出，
+            你可以根据自己的判断对结果进行修改，
+            点击确定后，你将会看到10轮决策的收益结果。
+        </p>
+        <p class="click_tip">阅读完毕请点击屏幕继续</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('prac-desp', {
+        template: '#prac-desp',
+        mounted() {
+            document.getElementById('content').addEventListener('click', this.clickScreen, false);
+        },
+        unmounted() {
+            document.getElementById('content').removeEventListener('click', this.clickScreen, false);
+        },
+        methods: {
+            clickScreen() {
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+<!-- 决策选项表 -->
+<script type="text/x-template" id="decision-form">
+    <div class="decision_con">
+        <div class="sel_con" v-for="n in showNum">
+            <p>第{{ toChinese(n) }}轮：打开空调？</p>
+            <div class="sel">
+                <label :for="'sel-'+n+'-0'">
+                    <input type="radio" 
+                        :name="'sel-'+n"
+                        :id="'sel-'+n+'-0'" 
+                        :disabled="banDeci[n-1]"
+                        value="0"
+                        v-model="userDeci[n-1]"
+                        @change="makeDecision(n-1)"
+                    >
+                    <span>开</span>
+                </label>
+                <label :for="'sel-'+n+'-1'">
+                    <input type="radio" 
+                        :name="'sel-'+n" 
+                        :id="'sel-'+n+'-1'"
+                        :disabled="banDeci[n-1]"
+                        value="1"
+                        v-model="userDeci[n-1]"
+                        @change="makeDecision(n-1)"
+                    >
+                    <span>关</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</script>
+<script>
+    app.component('decision-form', {
+        data() {
+            return {
+                userDeci: JSON.parse(JSON.stringify(this.setdeci)),
+                banDeci: []
+            }
+        },
+        template: '#decision-form',
+        props: ['setdeci'],
+        emits: ['update:modelValue'],
+        computed: {
+            showNum() {
+                for (let i = 0; i < this.userDeci.length; i++) {
+                    if (this.userDeci[i] == -1)
+                        return i + 1;
+                }
+                return this.userDeci.length;
+            }
+        },
+        methods: {
+            toChinese(num) {
+                return numToChinese(num);
+            },
+            makeDecision(ind) {
+                // this.banDeci[ind] = true;
+                let userdeci = [];
+                for (let i = 0; i < this.userDeci.length; i++) {
+                    userdeci.push(Number(this.userDeci[i]));
+                }
+                this.$emit('update:modelValue', userdeci)
+            }
+        }
+    })
+</script>
+<!-- 练习实验 -->
+<script type="text/x-template" id="prac-exp">
+    <div>
+        <p class="title top">练习实验</p>
+        <p class="description b">
+            本页面系统提供默认决策，您可对决策结果进行修改。
+            点击确定继续
+        </p>
+        <decision-form :setdeci="sysDeci" v-model="userDeci"></decision-form>
+        <score-table />
+        <input type="submit" value="确定" @click.stop="clickOk">
+    </div>
+</script>
+<script>
+    app.component('prac-exp', {
+        data() {
+            let iniDeci = [];
+            otherDecision1 = [];
+            otherDecision2 = [];
+            otherDecision3 = [];
+            for (let i = 0; i < 10; i++) {
+                iniDeci.push(Math.round(Math.random()));
+                otherDecision1.push(Math.round(Math.random()));
+                otherDecision2.push(Math.round(Math.random()));
+                otherDecision3.push(Math.round(Math.random()));
+            }
+            return {
+                sysDeci: JSON.parse(JSON.stringify(iniDeci)),
+                userDeci: JSON.parse(JSON.stringify(iniDeci))
+            }
+        },
+        template: '#prac-exp',
+        methods: {
+            clickOk(event) {
+                for (let i = 0; i < this.userDeci.length; i++) {
+                    if (this.userDeci[i] == -1) {
+                        alert("尚未完成决策！");
+                        return;
+                    }
+                }
+                systemDecision = JSON.parse(JSON.stringify(this.sysDeci));
+                userDecision = JSON.parse(JSON.stringify(this.userDeci));
+                userRoundScore = calcScore(userDecision, otherDecision1, otherDecision2, otherDecision3);
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+<!-- 博弈结果 -->
+<script type="text/x-template" id="game-result">
+    <div>
+        <p class="title">博弈结果</p>
+        <div class="table_con">
+            <table class="result_table">
+                <caption>最终决策博弈结果</caption>
+                <tr style="background-color: rgb(218,227,243);">
+                    <td class="first_col" rowspan="2"></td>
+                    <td colspan="10">决策轮次</td>
+                </tr>
+                <tr class="second_row" style="background-color: rgb(218,227,243);">
+                    <td v-for="n in 10">{{n}}</td>
+                </tr>
+                <tr style="background-color: rgb(242,242,242);">
+                    <td>参与者{{partinum[0]}}</td>
+                    <td v-for="item in otherDeci1" 
+                        style="background-color: rgb(249,249,249);" 
+                        :class="{green:item=='开',red:item=='关'}">
+                        {{item}}
+                    </td>
+                </tr>
+                <tr style="background-color: rgb(242,242,242);">
+                    <td>参与者{{partinum[1]}}</td>
+                    <td v-for="item in otherDeci2" 
+                    style="background-color: rgb(249,249,249);" 
+                    :class="{green:item=='开',red:item=='关'}">
+                    {{item}}
+                </td>
+                </tr>
+                <tr style="background-color: rgb(242,242,242);">
+                    <td>参与者{{partinum[2]}}</td>
+                    <td v-for="item in otherDeci3"
+                     style="background-color: rgb(249,249,249);" 
+                     :class="{green:item=='开',red:item=='关'}">
+                     {{item}}</td>
+                </tr>
+                <tr style="background-color: rgb(255,245,215);">
+                    <td>系统初始决策</td>
+                    <td v-for="item in sysDeci" 
+                    style="background-color: rgb(255,249,231);" 
+                    :class="{green:item=='开',red:item=='关'}">
+                    {{item}}
+                </td>
+                </tr>
+                <tr style="background-color: rgb(255,245,215);">
+                    <td>你的决策</td>
+                    <td v-for="item in userDeci" 
+                    style="background-color: rgb(255,249,231);" 
+                    :class="{green:item=='开',red:item=='关'}">
+                    {{item}}
+                </td>
+                </tr>
+                <tr style="background-color: rgb(255,245,215);">
+                    <td>你的最终收益</td>
+                    <td v-for="item in roundScore">{{item}}</td>
+                </tr>
+            </table>
+        </div>
+        <p class="click_tip">点击屏幕继续</p>
+        <!-- <div class="click_screen" @click="clickScreen"></div> -->
+    </div>
+</script>
+<script>
+    app.component('game-result', {
+        data() {
+            let obj = {
+                sysDeci: JSON.parse(JSON.stringify(systemDecision)),
+                userDeci: JSON.parse(JSON.stringify(userDecision)),
+                otherDeci1: JSON.parse(JSON.stringify(otherDecision1)),
+                otherDeci2: JSON.parse(JSON.stringify(otherDecision2)),
+                otherDeci3: JSON.parse(JSON.stringify(otherDecision3))
+            }
+            let nRound = obj.userDeci.length;
+            for (let i = 0; i < 10; i++) {
+                for (let key in obj) {
+                    if (i < nRound) {
+                        obj[key][i] = obj[key][i] == -1 ?
+                            "/" :
+                            obj[key][i] == 0 ? "开" : "关";
+                    } else {
+                        obj[key][i] = "";
+                    }
+                }
+            }
+            obj.roundScore = JSON.parse(JSON.stringify(userRoundScore));
+            for (let i = nRound; i < 10; i++) {
+                obj.roundScore[i] = "";
+            }
+            obj.partinum = partiNum;
+            return obj;
+        },
+        template: '#game-result',
+        mounted() {
+            document.getElementById('content').addEventListener('click', this.clickScreen, false);
+        },
+        unmounted() {
+            document.getElementById('content').removeEventListener('click', this.clickScreen, false);
+        },
+        methods: {
+            clickScreen() {
+                vmapp.nextMove();
+            }
+        }
+    })
+</script>
+<!-- 练习实验结束 -->
+<script type="text/x-template" id="branch">
+    <div>
+        <p class="title big">
+            练习实验结束
+        </p>
+        <p class="description big">
+            请您确保已完全理解实验意图，
+            如有问题请点击<b>左边按钮</b>回到实验背景页面，
+            如没有问题，请点击<b>右边按钮</b>确认完成练习
+        </p>
+        <div class="branch_btns">
+            <input class="branch_btn" type="submit" value="回到实验背景" @click.stop="clickReturn">
+            <input class="branch_btn" type="submit" value="练习完成确认" @click.stop="clickNext">    
+        </div>
+    </div>
+</script>
+<script>
+    app.component('branch', {
+        template: '#branch',
+        methods: {
+            clickReturn() {
+                vmapp.returnMove(1, 0);
+            },
+            clickNext() {
+                window.location.href="index.html";
+            }
+        }
+    })
+</script>
+
+<script>
+    const vmapp = app.mount('#app');
+</script>

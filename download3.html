@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>人机协同决策实验</title>
+    <meta charset="utf-8">
+    <meta http-equiv='pragma' content='no-cache' />
+    <meta http-equiv='cache-control' content='no-cache' />
+    <meta http-equiv='expires' content='0' />
+    <script src="js/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div style="text-align: center;">
+        <h1>现在数据库中有测试数据数目：<span id='count'></span></h1>
+        <button style="width: 100px; height: 40px; font-size: 20px;" onclick="checkData()">查询数目</button>
+        <button style="width: 100px; height: 40px; font-size: 20px;" onclick="download()">下载</button>
+        <br>
+        <br>
+        <button style="width: 100px; height: 40px; font-size: 20px;" onclick="clearData()">清空数据</button>
+        <input style="width: 160px; height: 30px; font-size: 20px;" 
+            type="password" id="password" placeholder="输入密码">
+    </div>
+    <script>
+        checkData();
+        function checkData(){
+            console.log('check command');
+            document.getElementById("count").innerHTML = "";
+            var ajaxUpload = $.ajax({
+                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?targetCollection=dataCollect3&command=check", //请求的URL
+                timeout: 3000, //超时时间设置，单位毫秒
+                type: 'get', //请求方式，get或post
+                complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                    document.getElementById("count").innerHTML = XMLHttpRequest.responseText;
+                    console.log('status: '+status);
+                    console.log('response: '+XMLHttpRequest.responseText);
+                    ajaxUpload.abort();
+                }
+            });
+        }
+        function clearData(){
+            console.log('clear command');
+            let password = document.getElementById("password").value;
+            var ajaxUpload = $.ajax({
+                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?targetCollection=dataCollect3&command=clear&password="+password, //请求的URL
+                timeout: 3000, //超时时间设置，单位毫秒
+                type: 'get', //请求方式，get或post
+                complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                    console.log('status: '+status);
+                    console.log('response: '+XMLHttpRequest.responseText);
+                    alert(XMLHttpRequest.responseText);
+                    if (status!='success'){
+                        checkData();
+                    }
+                    ajaxUpload.abort();
+                }
+            });
+        }
+        function download(){
+            var ajaxUpload = $.ajax({
+                url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/download?targetCollection=dataCollect3&command=download", //请求的URL
+                timeout: 5000, //超时时间设置，单位毫秒
+                type: 'get', //请求方式，get或post
+                complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                    // console.log(XMLHttpRequest.responseText);
+                    if (status == 'success'){
+                        downloadCSV(XMLHttpRequest.responseText);
+                    }
+                    console.log('status: '+status);
+                    console.log('response: '+XMLHttpRequest.responseText);
+                    ajaxUpload.abort();
+                }
+            });
+        }
+        function downloadCSV(csvText){
+            let uri = "data:text/csv;charset=utf-8,\ufeff" + encodeURIComponent(csvText);
+            var link = document.createElement('a');
+            link.href = uri;
+            link.download =  "data.csv";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+
+</html>

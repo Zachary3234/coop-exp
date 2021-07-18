@@ -64,11 +64,11 @@
 }
 .sel_con .sel label:hover input[type=radio]+span:before
 {
-    background-color: #ccc;
-}
-.sel_con .sel label input[type=radio]:disabled+span:before
-{
     background-color: #ddd;
+}
+.sel_con .sel label:hover input[type=radio]:disabled+span:before
+{
+    background-color: #fff;
 }
 .sel_con .sel label input[type=radio]:checked+span:before
 {

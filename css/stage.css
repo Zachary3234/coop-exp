@@ -329,3 +329,29 @@
     left: 50%;
     transform: translate(-50%,350px);
 }
+
+.fri_con {
+    width: 70%;
+    margin: 0px auto 10px auto;
+    display: flex;
+    text-align: center;
+}
+.fri_con .fri_text {
+    margin: auto;
+    font-size: 22px;
+    font-weight: bold;
+}
+.fri_con .fri_sel_con {
+    display: flex;
+    margin: auto;
+    cursor: pointer;
+}
+.fri_con .fri_sel_con input[type="radio"] {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+}
+.fri_con .fri_sel_con input[type="radio"]+span {
+    font-size: 22px;
+    margin: auto;
+}

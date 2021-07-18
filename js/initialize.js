@@ -45,17 +45,6 @@ function genSysDeciMap(){
     return sysDeciMap;
 }
 
-function shuffle(arr) {
-    //乱序
-    for (let i = arr.length - 1; i >= 0; i--) {
-        let rIndex = Math.floor(Math.random() * (i + 1));
-        let temp = arr[rIndex];
-        arr[rIndex] = arr[i];
-        arr[i] = temp;
-    }
-    return arr;
-}
-
 // 页面控制
 const stageList = genStageList();
 function genStageList() {
@@ -112,20 +101,20 @@ function genStageList() {
 }
 
 // 问卷职业表
-const occupationList = [
-    "在校学生",
-    "政府/机关干部/公务员",
-    "企业管理者（包括基层及中高层管理者）",
-    "普通职员（办公室/写字楼工作人员）",
-    "专业人员（如医生/律师/文体/记者/老师等）",
-    "普通工人（如工厂工人/体力劳动者等）",
-    "商业服务业职工（如销售人员/商店职员/服务员等）",
-    "个体经营者/承包商",
-    "自由职业者",
-    "农林牧渔劳动者",
-    "退休",
-    "暂无职业"
-]
+// const occupationList = [
+//     "在校学生",
+//     "政府/机关干部/公务员",
+//     "企业管理者（包括基层及中高层管理者）",
+//     "普通职员（办公室/写字楼工作人员）",
+//     "专业人员（如医生/律师/文体/记者/老师等）",
+//     "普通工人（如工厂工人/体力劳动者等）",
+//     "商业服务业职工（如销售人员/商店职员/服务员等）",
+//     "个体经营者/承包商",
+//     "自由职业者",
+//     "农林牧渔劳动者",
+//     "退休",
+//     "暂无职业"
+// ]
 
 // 数据收集对象
 const dataCollect = genDataCollect();
@@ -162,11 +151,7 @@ function genDataCollect() {
     
     return dataCollect;
 }
-function setDataCollect(key,value){
-    if (dataCollect.hasOwnProperty(key)){
-        dataCollect[key] = value;
-    }
-}
+
 dataCollect.targetCollection = "dataCollect1";
 
 
@@ -204,48 +189,8 @@ for (let i = 0; i < 10; i++) {
     userRoundScore.push(Math.round(Math.random()));
 }
 
-function calcScore(userDeci,otherDeci1,otherDeci2,otherDeci3){
-    let userRoundScore = [];
-    let score = 0;
-    let coopNum = 0;
-    for (let i = 0; i < userDeci.length; i++) {
-        coopNum = userDeci[i]+otherDeci1[i]+otherDeci2[i]+otherDeci3[i];
-        switch(coopNum){
-            case 0:
-                score = 8;
-                break;
-            case 1:
-                score = userDeci[i]==1 ? 4 : 12;
-                break;
-            case 2:
-                score = userDeci[i]==1 ? 8 : 16;
-                break;
-            case 3:
-                score = userDeci[i]==1 ? 12 : 20;
-                break;
-            case 4:
-                score = 16;
-                break;
-        }
-        userRoundScore.push(score);
-    }
-    return userRoundScore;
-}
+
 
 // 匹配者号码
 var partiNum = ['X','Y','Z'];
 
-function randIntNoRepeat(num,min,max){
-    let pool = [];
-    let res = [];
-    let ind = 0;
-    for(let i = min;i <= max;i++){
-        pool.push(i);
-    }
-    for (let i = 0; i < num; i++) {
-        ind = parseInt(Math.random()*(pool.length));
-        res.push(pool[ind]);
-        pool.splice(ind,1);
-    }
-    return res;
-}

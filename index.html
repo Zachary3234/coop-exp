@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/svo_test.css">
     <link rel="stylesheet" href="css/decision.css">
     <!-- scripts -->
-    <script src="js/NoToChinese.js"></script>
+    <script src="js/functions.js"></script>
 </head>
 
 <body>
@@ -43,9 +43,62 @@
         </div>
     </div>
 </body>
-<!-- 初始化全局变量 -->
-<script src="js/initialize.js"></script>
 <script>
+    // 程序初始化
+    var debugFlag = false;
+
+    //系统决策表
+    var systemDecisionMap = genSysDeciMap();
+    function genSysDeciMap() {
+        let sysDeciMap = [];
+        let sysDeciSet = [];
+        let systemCoopNum = [];
+        //前11轮决策
+        for (let i = 0; i < 11; i++) {
+            systemCoopNum.push(i);
+        }
+        systemCoopNum = shuffle(systemCoopNum);
+        for (let i = 0; i < 11; i++) {
+            sysDeciSet = [];
+            for (let j = 0; j < 10; j++) {
+                if (j < systemCoopNum[i])
+                    sysDeciSet.push(1);
+                else
+                    sysDeciSet.push(0);
+            }
+            sysDeciSet = shuffle(sysDeciSet);
+            sysDeciMap.push(sysDeciSet);
+        }
+        //第12轮决策
+        sysDeciSet = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+        sysDeciMap.push(sysDeciSet);
+        return sysDeciMap;
+    }
+
+    // 页面控制
+    const stageList = genStageList();
+    function genStageList() {
+        let stageList = [
+            {
+                tipText: "0. 选择实验",
+                moveList: [
+                    "intro"
+                ]
+            }
+        ];
+        return stageList;
+    }
+
+    // 数据收集对象
+    const dataCollect = genDataCollect();
+    function genDataCollect() {
+        let dataCollect = {
+            number: undefined
+        };
+
+        return dataCollect;
+    }
+    
     // 全局控制app
     const app = Vue.createApp({
         data() {
@@ -71,47 +124,6 @@
             returnMove(stage,move) {
                 this.indStage = stage;
                 this.indMove = move;
-            },
-            saveDecision(decisionTime){
-                let set = this.indStage-3;
-                let round = 0;
-                let key = "";
-                let coopRate = 0;
-                let score = 0;
-                for (let i = 0; i < userDecision.length; i++) {
-                    round = i+1;
-                    coopRate += userDecision[i];
-                    score += userRoundScore[i];
-
-                    key = "system_"+set+"-"+round;
-                    setDataCollect(key,systemDecision[i]);
-
-                    key = "user_"+set+"-"+round;
-                    setDataCollect(key,userDecision[i]);
-
-                    key = "other1_"+set+"-"+round;
-                    setDataCollect(key,otherDecision1[i]);
-
-                    key = "other2_"+set+"-"+round;
-                    setDataCollect(key,otherDecision2[i]);
-
-                    key = "other3_"+set+"-"+round;
-                    setDataCollect(key,otherDecision3[i]);
-                }
-                coopRate /= userDecision.length;
-                key = "coop_rate_"+set;
-                setDataCollect(key,coopRate);
-
-                key = "decision_time_"+set;
-                setDataCollect(key,decisionTime);
-
-                key = "score_"+set;
-                setDataCollect(key,score);
-                
-                key = "total_score";
-                let totalscore = dataCollect[key]+score;
-                setDataCollect(key,totalscore);
-                
             }
         }
     })
@@ -141,7 +153,10 @@
             <span>请输入实验编号</span>
             <input type="text" v-model="number">
         </div>
-        <input type="submit" value="确定" @click.stop="clickOk">
+        <input type="submit" value="练习实验" @click.stop="clickOk('practice')">
+        <input type="submit" value="实验一" @click.stop="clickOk('exp1')">
+        <input type="submit" value="实验二" @click.stop="clickOk('exp2')">
+        <input type="submit" value="实验三" @click.stop="clickOk('exp3')">
     </div>
 </script>
 <script>
@@ -151,944 +166,22 @@
                 number: ""
             }
         },
+        mounted() {
+            if (typeof(Storage) !== "undefined") {
+                this.number = sessionStorage["number"] || "";
+            } else {
+                this.number = "";
+            }
+        },
         template: '#intro',
         methods: {
             clickOk(event) {
+                if (typeof(Storage) !== "undefined") {
+                    sessionStorage["number"] = this.number;
+                }
                 setDataCollect("number",this.number);
-                vmapp.nextMove();
-            }
-        }
-    })
-</script>
-
-<!-- SVO测试 -->
-<script type="text/x-template" id="svo-test">
-    <div>
-        <p class="title">SVO测试</p>
-        <p class="description">
-            本页面将采用滑块测验的方式对你的社会价值取向进行测量。
-        </p>
-        <p class="description">
-            在这个任务中，你被随机地与另一个人配对，我们称他为“其他人”。
-            这个人是你不认识的人，你们将保持匿名，你所有的选择都是完全保密的。
-            <b>你要做一系列的决定，在你和这个人之间分配资源</b>。
-        </p>
-        <p class="description">
-            对于下面的每一个问题，请标出你最喜欢的分布。
-        </p>
-        <div class="svo_grid">
-            <svo-item v-for="n in 6" 
-                :self-gain-list="selfGainMap[n-1]"
-                :other-gain-list="otherGainMap[n-1]"
-                v-model="selects[n-1]"
-            ></svo-item>
-        </div>
-        <input type="submit" value="确定" @click.stop="clickOk">
-    </div>
-</script>
-<script type="text/x-template" id="svo-item">
-    <div class="svo_item">
-        <div class="table_con">
-            <table>
-                <tr>
-                    <td class="first_col">你得到</td>
-                    <td v-for="item in selfGainList">
-                        <div>{{ item }}</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td colspan="9">
-                        <input type="range" name="receives" min="0" max="8"
-                            v-model="select">
-                    </td>
-                </tr>
-                <tr>
-                    <td>其他人得到</td>
-                    <td v-for="item in otherGainList">
-                        <div>{{ item }}</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="gain_con">
-            <div class="gain">
-                <span class="label">你</span>
-                <span class="num">{{ selfGainList[select] }}</span>
-            </div>
-            <div class="gain">
-                <span class="label">他人</span>
-                <span class="num">{{ otherGainList[select] }}</span>
-            </div>
-        </div>
-    </div>
-</script>
-<script>
-    app.component('svo-item', {
-        data() {
-            return {
-                mselect: 0
-            }
-        },
-        props: ['self-gain-list','other-gain-list'],
-        emits: ['update:modelValue'],
-        template: '#svo-item',
-        computed: {
-            select: {
-                get() {
-                    return this.mselect
-                },
-                set(value) {
-                    this.mselect = value
-                    this.$emit('update:modelValue',value)
-                }
-            }
-        }
-    })
-    app.component('svo-test', {
-        data() {
-            return {
-                selfGainMap: svoGains.slice(0,6),
-                otherGainMap: svoGains.slice(6,12),
-                selects: [4,4,4,4,4,4],
-            }
-        },
-        template: '#svo-test',
-        computed: {
-            svo() {
-                let selfGain = 0;
-                let otherGain = 0;
-                for (let i = 0; i < 6; i++) {
-                    selfGain += this.selfGainMap[i][this.selects[i]];
-                    otherGain += this.otherGainMap[i][this.selects[i]];
-                }
-                return Math.atan((otherGain - 50 * 6) / (selfGain - 50 * 6)) * 180 / Math.PI;
-            }
-        },
-        methods: {
-            clickOk(event) {
-                setDataCollect("SVO",this.svo)
-                vmapp.nextMove();
-            }
-        }
-    })
-</script>
-
-<!-- 实验背景 -->
-<script type="text/x-template" id="exp-back">
-    <div>
-        <p class="title">实验背景</p>
-        <p class="description">
-            随着夏天的到来，气温升高。
-            在驾驶汽车的过程中，你面临两个选择：
-        </p>
-        <p class="description">
-            1）<b>打开空调</b>，会提高舒适度，但同时也会消耗更多的能源，
-            释放更多的有害气体，加重环境污染。
-        </p>
-        <p class="description">
-            2）<b>关掉空调</b>，在一定程度上会降低我们的舒适感，
-            却可以减少能源消耗，有害气体的释放，
-            为保护环境贡献一点力量。
-        </p>
-        <p class="description">
-            在这种情况下，<b>你会做什么选择呢？</b>
-        </p>
-        <p class="description">
-            本实验场景为<b>自动驾驶系统</b>，自主程度较高，
-            <b>可提前预设好是关开空调的决策</b>推荐给你；
-            而<b>你具有否决权</b>，
-            即可在它推荐的基础上按照自己的想法进行修改。
-        </p>
-        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
-        <!-- <div class="click_screen" @click.stop="clickScreen"></div> -->
-    </div>
-</script>
-<script>
-    app.component('exp-back', {
-        data() {
-            return {
-                cd: 20,
-                cdtimer: undefined
-            }
-        },
-        template: '#exp-back',
-        mounted() {
-            this.cdtimer = setInterval(this.cdminus,1000);
-            document.getElementById('content').addEventListener('click',this.clickScreen,false);
-        },
-        unmounted() {
-            clearInterval(this.cdtimer);
-            document.getElementById('content').removeEventListener('click',this.clickScreen, false);
-        },
-        methods: {
-            clickScreen() {
-                if (debugFlag){
-                    vmapp.nextMove();
-                }else{
-                    if (this.cd<=0)
-                        vmapp.nextMove();
-                }
-            },
-            cdminus() {
-                this.cd--;
-                if (this.cd<=0)
-                    clearInterval(this.cdtimer);
-            }
-        }
-    })
-</script>
-<!-- 实验说明 -->
-<script type="text/x-template" id="exp-desp">
-    <div>
-        <p class="title">实验说明</p>
-        <p class="description">
-            本实验中，你将与<b>另外三人</b>进行开关空调的<b>博弈</b>，
-            在每一轮博弈中，你们<b>每个人都有两个选择</b>，开空调与关空调。
-            在博弈过程中，你们四个人<b>彼此之间不进行交流</b>，
-            但是需要<b>各自做出决策</b>，
-            然后根据你们四个人的决策结果按照一定的得分规则进行收益的计算。
-            具体得分规则将在下页展示。
-        </p>
-        <p class="description">
-            在预设界面将进行<b>多轮博弈决策</b>，系统会预先做出决策，
-            你可对系统决策进行修改。
-        </p>
-        <p class="description">
-            每次预设结束后，
-            将会有列表呈现系统预设与你修改预设后的博弈结果。
-            列表中“开”表示打开空调，“关”表示关闭空调。
-        </p>
-        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
-        <!-- <div class="click_screen" @click="clickScreen"></div> -->
-    </div>
-</script>
-<script>
-    
-    app.component('exp-desp', {
-        data() {
-            return {
-                cd: 20,
-                cdtimer: undefined
-            }
-        },
-        template: '#exp-desp',
-        mounted() {
-            this.cdtimer = setInterval(this.cdminus,1000);
-            document.getElementById('content').addEventListener('click',this.clickScreen,false);
-        },
-        unmounted() {
-            clearInterval(this.cdtimer);
-            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
-        },
-        methods: {
-            clickScreen() {
-                if (debugFlag){
-                    vmapp.nextMove();
-                }else{
-                    if (this.cd<=0)
-                        vmapp.nextMove();
-                }
-            },
-            cdminus() {
-                this.cd--;
-                if (this.cd<=0)
-                    clearInterval(this.cdtimer);
-            }
-        }
-    })
-</script>
-<!-- 得分说明 -->
-<script type="text/x-template" id="score-table">
-    <table class="scoretable">
-        <tr>
-            <td class="fst">关空调人数，（人）</td>
-            <td v-for="n in 5">{{n-1}}</td>
-        </tr>
-        <tr class="alt">
-            <td class="fst">开空调人数，（人）</td>
-            <td v-for="n in 5">{{5-n}}</td>
-        </tr>
-        <tr>
-            <td class="fst">关空调得分，（分/人）</td>
-            <td>-</td>
-            <td v-for="n in 4">{{4*n}}</td>
-        </tr>
-        <tr class="alt">
-            <td class="fst">开空调得分，（分/人）</td>
-            <td v-for="n in 4">{{4+4*n}}</td>
-            <td>-</td>
-        </tr>
-    </table>
-</script>
-<script type="text/x-template" id="score-desp">
-    <div>
-        <p class="title">得分说明</p>
-        <p class="description">
-            以下列表为博弈得分说明，在此举例以便于理解：
-            如果你选择关闭空调而其他三个人选择打开它，
-            那么你将得到4分，而其他人将得到12分(见收益表第二列)。
-            如果每个人都选择关掉空调，
-            那么每个人都会得到16分(见收益表第五列)。
-            然而，如果每个人都决定打开自己的空调，
-            那么每个人只能得到8分(见收益表第一列)。
-            以此类推。
-        </p>
-        <br>
-        <score-table></score-table>
-        <p class="click_tip">阅读完毕请点击屏幕继续（<span>{{ cd }}</span>秒）</p>
-        <!-- <div class="click_screen" @click="clickScreen"></div> -->
-    </div>
-</script>
-<script>
-    app.component('score-table', {
-        template: '#score-table'
-    })
-    app.component('score-desp', {
-        data() {
-            return {
-                cd: 20,
-                cdtimer: undefined
-            }
-        },
-        template: '#score-desp',
-        mounted() {
-            this.cdtimer = setInterval(this.cdminus,1000);
-            document.getElementById('content').addEventListener('click',this.clickScreen,false);
-        },
-        unmounted() {
-            clearInterval(this.cdtimer);
-            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
-        },
-        methods: {
-            clickScreen() {
-                if (debugFlag){
-                    vmapp.nextMove();
-                }else{
-                    if (this.cd<=0)
-                        vmapp.nextMove();
-                }
-            },
-            cdminus() {
-                this.cd--;
-                if (this.cd<=0)
-                    clearInterval(this.cdtimer);
-            }
-        }
-    })
-</script>
-<!-- 理解反馈 -->
-<script type="text/x-template" id="under-test">
-    <div>
-        <p class="title">理解反馈：第{{ titleNumCN[ind] }}题</p>
-        <p class="description" v-if="ind==0">假设现在你与另外三人进行了一次博弈游戏，
-            你选择了<b>关</b>空调，而另外三个人中有<b>两个人</b>选择了<b>开</b>空调，
-            <b>一个人</b>选择了<b>关</b>空调，请问你的得分是多少：
-        </p>
-        <p class="description" v-if="ind==1">假设现在你与另外三人进行了一次博弈游戏，
-            你选择了<b>开</b>空调，而另外三个人中有<b>两个人</b>选择了<b>开</b>空调，
-            <b>一个人</b>选择了<b>关</b>空调，请问你的得分是多少：
-        </p>
-        <p class="description" v-if="ind==2">假设现在你与另外三人进行了一次博弈游戏，
-            你选择了<b>开</b>空调，而另外三个人中有<b>两个人</b>选择了<b>关</b>空调，
-            <b>一个人</b>选择了<b>开</b>空调，请问你的得分是多少：
-        </p>
-        <div class="under_btns">
-            <button class="under_btn" v-for="n in 5" @click.stop="clickBtn(n)">{{ 4*n }}</button>
-        </div>
-        <score-table />
-        <p class="click_tip">请点击按钮答题</p>
-    </div>
-</script>
-<script>
-    app.component('under-test', {
-        data() {
-            return {
-                ind: 0,
-                titleNumCN: ["一","二","三"],
-                answers: [2,3,4],
-            }
-        },
-        template: '#under-test',
-        methods: {
-            clickBtn(num) {
-                if (num==this.answers[this.ind]){
-                    this.ind++;
-                    if (this.ind==this.answers.length)
-                        vmapp.nextMove();
-                }
-                else{
-                    alert('答案错误，请重新作答')
-                }
-            }
-        }
-    })
-</script>
-
-<!-- 练习说明 -->
-<script type="text/x-template" id="prac-desp">
-    <div>
-        <p class="title">练习说明</p>
-        <p class="description">接下来为练习实验，
-            本次页面将会呈现10轮次决策，决策结果系统已预先给出，
-            你可以根据自己的判断对结果进行修改，
-            点击确定后，你将会看到10轮决策的收益结果。
-        </p>
-        <p class="click_tip">阅读完毕请点击屏幕继续</p>
-        <!-- <div class="click_screen" @click="clickScreen"></div> -->
-    </div>
-</script>
-<script>
-    app.component('prac-desp', {
-        template: '#prac-desp',
-        mounted() {
-            document.getElementById('content').addEventListener('click',this.clickScreen,false);
-        },
-        unmounted() {
-            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
-        },
-        methods: {
-            clickScreen() {
-                vmapp.nextMove();
-            }
-        }
-    })
-</script>
-<!-- 决策选项表 -->
-<script type="text/x-template" id="decision-form">
-    <div class="decision_con">
-        <div class="sel_con" v-for="n in showNum">
-            <p>第{{ toChinese(n) }}轮：打开空调？</p>
-            <div class="sel">
-                <label :for="'sel-'+n+'-0'">
-                    <input type="radio" 
-                        :name="'sel-'+n"
-                        :id="'sel-'+n+'-0'" 
-                        :disabled="banDeci[n-1]"
-                        value="0"
-                        v-model="userDeci[n-1]"
-                        @change="makeDecision(n-1)"
-                    >
-                    <span>开</span>
-                </label>
-                <label :for="'sel-'+n+'-1'">
-                    <input type="radio" 
-                        :name="'sel-'+n" 
-                        :id="'sel-'+n+'-1'"
-                        :disabled="banDeci[n-1]"
-                        value="1"
-                        v-model="userDeci[n-1]"
-                        @change="makeDecision(n-1)"
-                    >
-                    <span>关</span>
-                </label>
-            </div>
-        </div>
-    </div>
-</script>
-<script>
-    app.component('decision-form', {
-        data() {
-            return{
-                userDeci: JSON.parse(JSON.stringify(this.setdeci)),
-                banDeci: []
-            }
-        },
-        template: '#decision-form',
-        props: ['setdeci'],
-        emits: ['update:modelValue'],
-        computed: {
-            showNum() {
-                for (let i = 0; i < this.userDeci.length; i++) {
-                    if (this.userDeci[i]==-1)
-                        return i+1;
-                }
-                return this.userDeci.length;
-            }
-        },
-        methods: {
-            toChinese(num) {
-                return NoToChinese(num);
-            },
-            makeDecision(ind) {
-                // this.banDeci[ind] = true;
-                let userdeci = [];
-                for (let i = 0; i < this.userDeci.length; i++) {
-                    userdeci.push(Number(this.userDeci[i]));
-                }
-                this.$emit('update:modelValue', userdeci)
-            }
-        }
-    })
-</script>
-<!-- 练习实验 -->
-<script type="text/x-template" id="prac-exp">
-    <div>
-        <p class="title top">练习实验</p>
-        <p class="description b">
-            本页面系统提供默认决策，您可对决策结果进行修改。
-            点击确定继续
-        </p>
-        <decision-form :setdeci="sysDeci" v-model="userDeci"></decision-form>
-        <score-table />
-        <input type="submit" value="确定" @click.stop="clickOk">
-    </div>
-</script>
-<script>
-    app.component('prac-exp', {
-        data() {
-            let iniDeci = [];
-            otherDecision1 = [];
-            otherDecision2 = [];
-            otherDecision3 = [];
-            for (let i = 0; i < 10; i++) {
-                iniDeci.push(Math.round(Math.random()));
-                otherDecision1.push(Math.round(Math.random()));
-                otherDecision2.push(Math.round(Math.random()));
-                otherDecision3.push(Math.round(Math.random()));
-            }
-            return{
-                sysDeci: JSON.parse(JSON.stringify(iniDeci)),
-                userDeci: JSON.parse(JSON.stringify(iniDeci))
-            }
-        },
-        template: '#prac-exp',
-        methods: {
-            clickOk(event) {
-                for (let i = 0; i < this.userDeci.length; i++) {
-                    if (this.userDeci[i]==-1){
-                        alert("尚未完成决策！");
-                        return;
-                    }
-                }
-                systemDecision = JSON.parse(JSON.stringify(this.sysDeci));
-                userDecision = JSON.parse(JSON.stringify(this.userDeci));
-                userRoundScore = calcScore(userDecision,otherDecision1,otherDecision2,otherDecision3);
-                vmapp.nextMove();
-            }
-        }
-    })
-</script>
-<!-- 博弈结果 -->
-<script type="text/x-template" id="game-result">
-    <div>
-        <p class="title">博弈结果</p>
-        <div class="table_con">
-            <table class="result_table">
-                <caption>最终决策博弈结果</caption>
-                <tr style="background-color: rgb(218,227,243);">
-                    <td class="first_col" rowspan="2"></td>
-                    <td colspan="10">决策轮次</td>
-                </tr>
-                <tr class="second_row" style="background-color: rgb(218,227,243);">
-                    <td v-for="n in 10">{{n}}</td>
-                </tr>
-                <tr style="background-color: rgb(242,242,242);">
-                    <td>参与者{{partinum[0]}}</td>
-                    <td v-for="item in otherDeci1" 
-                        style="background-color: rgb(249,249,249);" 
-                        :class="{green:item=='开',red:item=='关'}">
-                        {{item}}
-                    </td>
-                </tr>
-                <tr style="background-color: rgb(242,242,242);">
-                    <td>参与者{{partinum[1]}}</td>
-                    <td v-for="item in otherDeci2" 
-                    style="background-color: rgb(249,249,249);" 
-                    :class="{green:item=='开',red:item=='关'}">
-                    {{item}}
-                </td>
-                </tr>
-                <tr style="background-color: rgb(242,242,242);">
-                    <td>参与者{{partinum[2]}}</td>
-                    <td v-for="item in otherDeci3"
-                     style="background-color: rgb(249,249,249);" 
-                     :class="{green:item=='开',red:item=='关'}">
-                     {{item}}</td>
-                </tr>
-                <tr style="background-color: rgb(255,245,215);">
-                    <td>系统初始决策</td>
-                    <td v-for="item in sysDeci" 
-                    style="background-color: rgb(255,249,231);" 
-                    :class="{green:item=='开',red:item=='关'}">
-                    {{item}}
-                </td>
-                </tr>
-                <tr style="background-color: rgb(255,245,215);">
-                    <td>你的决策</td>
-                    <td v-for="item in userDeci" 
-                    style="background-color: rgb(255,249,231);" 
-                    :class="{green:item=='开',red:item=='关'}">
-                    {{item}}
-                </td>
-                </tr>
-                <tr style="background-color: rgb(255,245,215);">
-                    <td>你的最终收益</td>
-                    <td v-for="item in roundScore">{{item}}</td>
-                </tr>
-            </table>
-        </div>
-        <p class="click_tip">点击屏幕继续</p>
-        <!-- <div class="click_screen" @click="clickScreen"></div> -->
-    </div>
-</script>
-<script>
-    app.component('game-result', {
-        data() {
-            let obj = {
-                sysDeci: JSON.parse(JSON.stringify(systemDecision)),
-                userDeci: JSON.parse(JSON.stringify(userDecision)),
-                otherDeci1: JSON.parse(JSON.stringify(otherDecision1)),
-                otherDeci2: JSON.parse(JSON.stringify(otherDecision2)),
-                otherDeci3: JSON.parse(JSON.stringify(otherDecision3))
-            }
-            let nRound = obj.userDeci.length;
-            for (let i = 0; i < 10; i++) {
-                for (let key in obj) {
-                    if (i<nRound){
-                        obj[key][i] = obj[key][i]==-1 ? 
-                            "/" :
-                            obj[key][i]==0 ? "开":"关";
-                    }else{
-                        obj[key][i] = "";
-                    }
-                }
-            }
-            obj.roundScore = JSON.parse(JSON.stringify(userRoundScore));
-            for (let i = nRound; i < 10; i++) {
-                obj.roundScore[i] = "";
-            }
-            obj.partinum = partiNum;
-            return obj;
-        },
-        template: '#game-result',
-        mounted() {
-            document.getElementById('content').addEventListener('click',this.clickScreen,false);
-        },
-        unmounted() {
-            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
-        },
-        methods: {
-            clickScreen() {
-                vmapp.nextMove();
-            }
-        }
-    })
-</script>
-<!-- 练习实验结束 -->
-<script type="text/x-template" id="branch">
-    <div>
-        <p class="title big">
-            练习实验结束
-        </p>
-        <p class="description big">
-            请您确保已完全理解实验意图，
-            如有问题请点击<b>左边按钮</b>回到实验背景页面，
-            如没有问题，请点击<b>右边按钮</b>进入正式实验
-        </p>
-        <div class="branch_btns">
-            <input class="branch_btn" type="submit" value="回到实验背景" @click.stop="clickReturn">
-            <input class="branch_btn" type="submit" value="进入正式实验" @click.stop="clickNext">    
-        </div>
-    </div>
-</script>
-<script>
-    app.component('branch', {
-        template: '#branch',
-        methods: {
-            clickReturn() {
-                vmapp.returnMove(2,0);
-            },
-            clickNext() {
-                vmapp.nextMove();
-            }
-        }
-    })
-</script>
-<!-- 匹配 -->
-<script type="text/x-template" id="matching">
-    <div>
-        <p class="match_tip" 
-            style="text-align: center; font-size: 40px; "
-            v-if="!matchSuccess"
-        >
-            请等待连接其他三位参与者...
-        </p>
-        <p class="match_tip"
-            style="text-align: center; font-size: 40px; "
-            v-if="matchSuccess"
-        >
-            匹配成功
-        </p>
-        <div class="parti_con">
-            <div class="match_parti">
-                <img class="parti_icon" src="img/parti1.png" alt="参与者1">
-                <span class="parti_text" v-if="partinum[0]!=0">参与者{{partinum[0]}}</span>
-            </div>
-            <div class="match_parti">
-                <img class="parti_icon" src="img/parti2.png" alt="参与者2">
-                <span class="parti_text" v-if="partinum[1]!=0">参与者{{partinum[1]}}</span>
-            </div>
-            <div class="match_parti">
-                <img class="parti_icon" src="img/parti3.png" alt="参与者3">
-                <span class="parti_text" v-if="partinum[2]!=0">参与者{{partinum[2]}}</span>
-            </div>
-        </div>
-        <!-- <div class="click_screen" @click="clickScreen"></div> -->
-    </div>
-</script>
-<script>
-    app.component('matching', {
-        data() {
-            return {
-                cd: 5,
-                cdtimer: undefined,
-                partinum: [0,0,0],
-                matchSuccess: false
-            }
-        },
-        template: '#matching',
-        mounted() {
-            this.cdtimer = setInterval(this.cdminus,1000);
-            partiNum = randIntNoRepeat(3,1,16);
-            document.getElementById('content').addEventListener('click',this.clickScreen,false);
-        },
-        unmounted() {
-            clearInterval(this.cdtimer);
-            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
-        },
-        methods: {
-            cdminus() {
-                this.cd--;
-                if (this.cd<=0){
-                    if (!this.matchSuccess){
-                        this.partinum = partiNum;
-                        this.matchSuccess = true;
-                        this.cd = 3;
-                    }
-                    else{
-                        clearInterval(this.cdtimer);
-                        vmapp.nextMove();
-                    }
-                }
-            },
-            clickScreen(){
-                if (debugFlag)
-                    vmapp.nextMove();
-            }
-        }
-    })
-</script>
-
-<!-- 正式实验 -->
-<script type="text/x-template" id="formal-exp">
-    <div>
-        <div class="parti_bar">
-            <div class="bar_item">
-                <img class="bar_icon" src="img/parti1.png" alt="参与者1">
-                <span class="bar_text">参与者{{ partinum[0] }}</span>
-            </div>
-            <div class="bar_item">
-                <img class="bar_icon" src="img/parti2.png" alt="参与者2">
-                <span class="bar_text">参与者{{ partinum[1] }}</span>
-            </div>
-            <div class="bar_item">
-                <img class="bar_icon" src="img/parti3.png" alt="参与者3">
-                <span class="bar_text">参与者{{ partinum[2] }}</span>
-            </div>
-        </div>
-        <p class="description b" v-if="hasSysDeci">
-            本页面系统提供默认决策，您可对决策结果进行修改。
-            点击确定继续
-        </p>
-        <p class="description b" v-if="!hasSysDeci">
-            本页面系统不再自动做出决策，请您手动为系统编辑十轮开关空调的决策。
-            完成决策后点击确定继续
-        </p>
-        <decision-form :setdeci="sysDeci" v-model="userDeci"></decision-form>
-        <score-table />
-        <input type="submit" value="确定" @click.stop="clickOk">
-    </div>
-</script>
-<script>
-    app.component('formal-exp', {
-        data() {
-            let iniDeci = systemDecisionMap.splice(0,1);
-            iniDeci = iniDeci[0];
-            otherDecision1 = [];
-            otherDecision2 = [];
-            otherDecision3 = [];
-            for (let i = 0; i < iniDeci.length; i++) {
-                otherDecision1.push(Math.round(Math.random()));
-                otherDecision2.push(Math.round(Math.random()));
-                otherDecision3.push(Math.round(Math.random()));
-            }
-            return{
-                sysDeci: JSON.parse(JSON.stringify(iniDeci)),
-                userDeci: JSON.parse(JSON.stringify(iniDeci)),
-                partinum: partiNum,
-                decisionTime: 0,
-                timer: undefined
-            }
-        },
-        template: '#formal-exp',
-        mounted() {
-            this.timer = setInterval(this.clock,100);
-        },
-        unmounted() {
-            clearInterval(this.timer);
-        },
-        computed:{
-            hasSysDeci(){
-                for (let i = 0; i < this.sysDeci.length; i++) {
-                    if (this.sysDeci[0]!=-1)
-                        return true;
-                }
-                return false;
-            }
-        },
-        methods: {
-            clickOk(event) {
-                for (let i = 0; i < this.userDeci.length; i++) {
-                    if (this.userDeci[i]==-1){
-                        if (!debugFlag){
-                            alert("尚未完成决策！");
-                            return;
-                        }else{
-                            this.userDeci[i] = Math.round(Math.random());
-                        }
-                    }
-                }
-                systemDecision = this.sysDeci;
-                userDecision = this.userDeci;
-                userRoundScore = calcScore(userDecision,otherDecision1,otherDecision2,otherDecision3);
-
-                clearInterval(this.timer);
-
-                vmapp.saveDecision(this.decisionTime/10);
-                vmapp.nextMove();
-            },
-            clock() {
-                this.decisionTime++;
-                if (this.decisionTime > 10000) {
-                    //超时，停止计时
-                    clearInterval(this.timer);
-                }
-            }
-        }
-    })
-</script>
-<!-- 等待 -->
-<script type="text/x-template" id="waiting">
-    <div>
-        <p class="big_tip">等待其他三位参与者做出决策...</p>
-        <!-- <div class="click_screen" @click="clickScreen"></div> -->
-    </div>
-</script>
-<script>
-    app.component('waiting', {
-        data() {
-            return {
-                cd: 15,
-                cdtimer: undefined
-            }
-        },
-        template: '#waiting',
-        mounted() {
-            this.cdtimer = setInterval(this.cdminus,100);
-            document.getElementById('content').addEventListener('click',this.clickScreen,false);
-        },
-        unmounted() {
-            clearInterval(this.cdtimer);
-            document.getElementById('content').removeEventListener('click',this.clickScreen,false);
-        },
-        methods: {
-            cdminus() {
-                this.cd--;
-                if (this.cd<=0){
-                    clearInterval(this.cdtimer);
-                    vmapp.nextMove();
-                }
-            },
-            clickScreen(){
-                if (debugFlag)
-                    vmapp.nextMove();
-            }
-        }
-    })
-</script>
-
-<!-- 实验结束 -->
-<script type="text/x-template" id="exp-over">
-    <p class="big_tip">实验结束，感谢您的参与！</p>
-    <div class="wait_post" v-show="sending">
-        <span>正在发送实验数据到服务器，请勿关闭网页{{ dotText }}</span>
-    </div>
-    <div class="wait_post" v-show="success">
-        <span>发送成功</span>
-    </div>
-    <div class="wait_post" v-show="fail">
-        <span>发送失败，请点击按钮重新发送：</span>
-        <span>{{failtext}}</span>
-        <input type="submit" value="发送" @click="sendStorage">
-    </div>
-</script>
-<script>
-    app.component('exp-over', {
-        data() {
-            return {
-                dotText: "",
-                cdtimer: undefined,
-                dataId: "",
-                sending: true,
-                success: false,
-                fail: false,
-                failtext: ''
-            }
-        },
-        template: '#exp-over',
-        mounted() {
-            this.cdtimer = setInterval(this.cdminus,1000);
-            setDataCollect("finish_time",Date());
-            this.sendStorage();
-        },
-        unmounted() {
-            clearInterval(this.cdtimer);
-        },
-        methods: {
-            cdminus() {
-                this.dotText = this.dotText+".";
-                if (this.dotText=="...."){
-                    this.dotText = "";
-                }
-            },
-            sendStorage(){
-                this.sending = true;
-                this.success = false;
-                this.fail = false;
-                let _this = this;
-                //ajax发送到服务器
-                var ajaxUpload = $.ajax({
-                    url: "https://559f0faa-50ee-4605-869c-eb432c954171.bspapp.com/http/upload", //请求的URL
-                    timeout: 5000, //超时时间设置，单位毫秒
-                    type: 'post', //请求方式，get或post
-                    data: JSON.stringify(dataCollect), //请求所传参数，json格式
-                    complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
-                        _this.sending = false;
-                        if (status == 'success') {
-                            _this.success = true;
-                            _this.dataId = XMLHttpRequest.responseText;
-                        }
-                        else{
-                            _this.success = false;
-                            _this.fail = true;
-                            _this.failtext = XMLHttpRequest.responseText;
-                            console.log('fail');
-                        }
-                        console.log('complete');
-                        ajaxUpload.abort();
-                    },
-                });
+                
+                window.location.href = event+".html";
             }
         }
     })
