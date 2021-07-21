@@ -154,10 +154,11 @@
 <!-- 实验介绍和基本信息 -->
 <script type="text/x-template" id="intro">
     <div>
-        <p class="title big">行为决策实验三</p>
+        <p class="title big">系统自然环境友好度评价</p>
         <p class="description">
             欢迎您参与北航人因工程实验室的行为决策实验，
-            本实验旨在探究自动驾驶情境下人的行为决策，
+            本实验会展示十一种不同的系统默认的开关空调决策，
+            请依次评价不同决策对自然环境的友好度（也即是否有利于环境保护），
             您的答案没有正误之分，
             只需要您按照自己的理解进行选择即可！
         </p>
@@ -209,13 +210,13 @@
             系统默认打开空调<span style="color:red;font-weight:bold;">{{openNum}}</span>次，关闭空调<span style="color:red;font-weight:bold;">{{closeNum}}</span>次，
             请评价呈现本界面的系统对自然环境的友好度。
         </p>
-        <br>
-        <p class="description b">
-            本页面系统提供默认决策，您可对决策结果进行修改。
-            点击确定继续
-        </p>
-        <decision-form :user-deci="iniDeci"></decision-form>
-        <br>
+        <div class="deci_form_con">
+            <p class="description b">
+                本页面系统提供默认决策，您可对决策结果进行修改。
+                点击确定继续
+            </p>
+            <decision-form :user-deci="iniDeci"></decision-form>
+        </div>
         <div class="fri_con">
             <span class="fri_text">很不友好</span>
             <label class="fri_sel_con" :for="'fri-sel-'+n" v-for="n in 5">

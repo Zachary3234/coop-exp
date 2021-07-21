@@ -1,3 +1,10 @@
+.deci_form_con{
+    max-width: 640px;
+    margin: 20px auto;
+    padding: 10px 0;
+    border: 2px solid #eee;
+}
+
 .decision_con{
     max-width: 640px;
     margin: 10px 0;
