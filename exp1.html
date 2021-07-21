@@ -121,6 +121,11 @@
             number: undefined,
             SVO: undefined
         };
+        for (let i = 0; i < 6; i++) {
+            dataCollect["SVO_"+(i+1)+"-self"] = undefined;
+            dataCollect["SVO_"+(i+1)+"-other"] = undefined;
+        }
+        
         for (let set = 1; set <= 12; set++) {
             if (set != 12) {
                 for (let round = 1; round <= 10; round++) {
@@ -401,7 +406,7 @@
             return {
                 selfGainMap: svoGains.slice(0, 6),
                 otherGainMap: svoGains.slice(6, 12),
-                selects: [4, 4, 4, 4, 4, 4],
+                selects: [0, 0, 0, 0, 0, 0],
             }
         },
         template: '#svo-test',
@@ -418,6 +423,10 @@
         },
         methods: {
             clickOk(event) {
+                for (let i = 0; i < 6; i++) {
+                    setDataCollect("SVO_"+(i+1)+"-self", this.selfGainMap[i][this.selects[i]])
+                    setDataCollect("SVO_"+(i+1)+"-other", this.otherGainMap[i][this.selects[i]])
+                }
                 setDataCollect("SVO", this.svo)
                 vmapp.nextMove();
             }
