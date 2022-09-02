@@ -1,6 +1,6 @@
 # 人机合作决策实验
 
-[https://zachary3234.github.io/coopexp/](https://zachary3234.github.io/coopexp/)
+[https://zachary3234.github.io/coopexp/](https://zachary3234.github.io/coop-exp/)
 
 page built in Chinese
 
